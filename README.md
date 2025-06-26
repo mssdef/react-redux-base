@@ -1,6 +1,7 @@
 # Music Player - React Redux Application
 
-A modern React/Redux application for managing and playing music tracks with search functionality and improved user experience.
+This is React/Redux e-commerce frontend application connected to Magento GraphQL API
+
 
 ## Features
 
@@ -104,3 +105,4 @@ src/
 
 Improve code based on project roadmap in README.md, 
 or find the bug and fix
+
