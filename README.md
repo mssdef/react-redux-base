@@ -9,6 +9,7 @@ This is React/Redux e-commerce frontend application connected to Magento GraphQL
 
 - 🔍 **Search Functionality**: Filter songs by title in real-time
 - 🎨 **Modern UI**: Beautiful interface using Semantic UI framework
+
 - ♿ **Accessibility**: ARIA labels and semantic HTML for better accessibility
 - 🛡️ **Error Handling**: Error boundaries for graceful error recovery
 - 📱 **Responsive Design**: Works on desktop and mobile devices
