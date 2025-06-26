@@ -1,64 +1,108 @@
-This is React/Redux frontend application connected to Magento GraphQL
+# Music Player - React Redux Application
 
-### `npm start`
+This is React/Redux e-commerce frontend application connected to Magento GraphQL API
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## Features
 
-### `npm test`
+- 🎵 **Song Management**: View and select songs from a curated list
+- 🔍 **Search Functionality**: Filter songs by title in real-time
+- 🎨 **Modern UI**: Beautiful interface using Semantic UI framework
+- ♿ **Accessibility**: ARIA labels and semantic HTML for better accessibility
+- 🛡️ **Error Handling**: Error boundaries for graceful error recovery
+- 📱 **Responsive Design**: Works on desktop and mobile devices
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Recent Improvements
 
-### `npm run build`
+### Bugs Fixed
+- ✅ Fixed typo in button className (`"buttin"` → `"button"`)
+- ✅ Added missing Semantic UI CSS framework
+- ✅ Improved error handling with ErrorBoundary component
+- ✅ Enhanced accessibility with ARIA labels
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Features Added
+- 🔍 **Search & Filter**: Real-time song filtering by title
+- 🎨 **Enhanced UI**: Better styling with cards, segments, and icons
+- 📊 **Visual Feedback**: Improved song selection display
+- 🛡️ **Error Recovery**: Graceful error handling with user-friendly messages
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+### Technical Improvements
+- ⬆️ **Updated Dependencies**: React 16 → React 18, modern testing libraries
+- 🧹 **Code Quality**: Better code formatting and structure
+- 📝 **Documentation**: Comprehensive README and inline comments
+- 🔧 **Development Tools**: Added linting scripts and ESLint configuration
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Getting Started
 
-### `npm run eject`
+### Prerequisites
+- Node.js (version 14 or higher)
+- npm or yarn
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Installation
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Running the Application
+```bash
+npm start
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+The application will open at `http://localhost:3000`
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Available Scripts
+- `npm start` - Start development server
+- `npm build` - Build for production
+- `npm test` - Run tests
+- `npm run lint` - Check code quality
+- `npm run lint:fix` - Fix linting issues
 
-## Learn More
+## Project Structure
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+src/
+├── actions/
+│   └── index.js          # Redux actions
+├── components/
+│   ├── App.js           # Main application component
+│   ├── ErrorBoundary.js # Error handling component
+│   ├── SongDetail.js    # Song details display
+│   └── SongList.js      # Song list with search
+├── reducers/
+│   └── index.js         # Redux reducers
+└── index.js             # Application entry point
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Technology Stack
 
-### Code Splitting
+- **React 18** - Modern React with hooks and concurrent features
+- **Redux** - State management
+- **React Redux** - React bindings for Redux
+- **Semantic UI** - CSS framework for beautiful UI components
+- **Create React App** - Build tool and development environment
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+## Future Enhancements
 
-### Analyzing the Bundle Size
+- 🎵 **Audio Playback**: Actual music playing functionality
+- 📱 **PWA Support**: Progressive Web App features
+- 🎨 **Dark Mode**: Theme switching capability
+- 📊 **Analytics**: User interaction tracking
+- 🔐 **Authentication**: User accounts and playlists
+- 📱 **Mobile App**: React Native version
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+## Contributing
 
-### Making a Progressive Web App
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+## License
 
-### Advanced Configuration
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+Improve code based on project roadmap in README.md, 
+or find the bug and fix
 
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
