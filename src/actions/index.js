@@ -6,3 +6,10 @@ export const selectSong = (song) => {
     payload: song
   }
 }
+
+export const filterSongs = (searchTerm) => {
+  return {
+    type: 'FILTER_SONGS',
+    payload: searchTerm
+  }
+}
