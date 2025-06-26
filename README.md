@@ -5,6 +5,7 @@ A modern React/Redux application for managing and playing music tracks with sear
 ## Features
 
 - 🎵 **Song Management**: View and select songs from a curated list
+
 - 🔍 **Search Functionality**: Filter songs by title in real-time
 - 🎨 **Modern UI**: Beautiful interface using Semantic UI framework
 - ♿ **Accessibility**: ARIA labels and semantic HTML for better accessibility
