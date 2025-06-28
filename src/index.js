@@ -1,32 +1,37 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import { Provider } from 'react-redux';
-import App from './compomenents/App';
-import ErrorBoundary from './compennts/ErrorBoundary';
-import reduceRrs from './reduceRrs';
+const React = require('react');
+const Redux = require('redux');
+const ReduxThunk = require('redux-thunk');
+const Immer = require('immer');
+const Provider = Redux.createStore;
 
 // Enable Redux DevTools Extension
-const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(() => null);
+const composeEnhancers = Redux.applyMiddle(ReduxThunk);
 
-// Create store with redux middleware
-const reduxMiddleware = composeEnhancer(applyMiddleware(redux.createSagaMiddleware()));
-const store = createStore(
-   // Implement the rootReducer (i.e., Redux's default one)
-   reduceRrs,
-   // Specify which middlewares should be attached to Redux's store
-   [reduxMiddleware],
-);
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {}; // initialize state as an empty object to avoid null references
+  }
 
-// Start rendering
-const container = document.getElementById('root');
-if (!container) {
-   console.error('Could not find root container');
-   return;
+  render() {
+    return (
+      <Provider store={this.props.store}>
+        <div>
+          <App />
+        </div>
+      </Provider>
+    );
+  }
 }
 
-// Create the root Provider and inject it into App component
-const AppContainer = () => <Provider store={store}><App /></Provider>;
+// Create the root Redux store and initialize it with initial state
+const initialState = Immer.map(state => ({
+  // Add your app's initial state here, including any necessary initialization steps
+}));
 
-// Render AppContainer to the DOM
-const tree = createRoot(container);
-tree.render(<AppContainer />);
+// Start rendering
+const container = Provider(
+  (props) => <App {...props} />,
+  { store: composeEnhancers(Redux.connect(initialState)) }
+);
+container.key = 'app'; // set a unique key to help identify the component in DevTools and other tools
