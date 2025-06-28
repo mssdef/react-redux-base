@@ -1,3 +1,18 @@
-Additional comments to guide the reviewer's evaluation of this contribution:
+import React from 'react';
+import './LoadingSpinner.css';
 
-1. Imporoves Code Quality and Readability: This contribution aims to improve code quality by applying modern React/Redux best practices. By doing so, it is expected that the implementation will be cleaner, easier to read, and more maintainable in the long run. 2. Optimize Performance Where Possible: To achieve this goal, it would be helpful if the reviewer could see examples of how new functionality has been implemented or explained with minimal code changes. This would allow them to evaluate whether the contributor's suggestions are worth implementing in the project. 3. Add Missing Features That Would Enhance Functionality: As mentioned earlier, it is crucial for the reviewer to understand what features the project currently lacks, and whether or not this contribution would enhance those functionalities. If the contributor suggests adding a new feature that will improve the project's functionality, it could potentially be approved without further modifications. 4. Apply Modern React/Redux Best Practices: By following modern React/Redux best practices, contributors can ensure a consistent and optimized user experience across different platforms. This includes things like using proper naming conventions for components, avoiding unnecessary state changes, and ensuring the component hierarchy is clear and logical. 5. Optimize Component Structure and Organization: Finally, it's essential to review examples of how this contribution has improved component structure and organization within the project. By doing so, they can evaluate whether or not this approach aligns with the project's goals and objectives. In conclusion, these additional comments should guide the reviewer's evaluation of this contribution. By providing clear code samples and explanations for improvements where possible, reviewers can easily assess if this contribution meets their expectations and is worthy of approval.
+const LoadingSpinner = ({ size = 'medium', color = 'primary', text = 'Loading...' }) => {
+  const sizeClass = `spinner-${size}`;
+  const colorClass = `spinner-${color}`;
+
+  return (
+    <div className="loading-spinner-container">
+      <div className={`loading-spinner ${sizeClass} ${colorClass}`}>
+        <div className="spinner"></div>
+      </div>
+      {text && <p className="loading-text">{text}</p>}
+    </div>
+  );
+};
+
+export default LoadingSpinner;
