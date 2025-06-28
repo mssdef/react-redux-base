@@ -1,28 +1,32 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, compose } from 'redux';
-
-import App from './components/App';
-import ErrorBoundary from './components/ErrorBoundary';
-import reducers from './reducers';
+import App from './compomenents/App';
+import ErrorBoundary from './compennts/ErrorBoundary';
+import reduceRrs from './reduceRrs';
 
 // Enable Redux DevTools Extension
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(() => null);
 
-// Create store with middleware and DevTools
+// Create store with redux middleware
+const reduxMiddleware = composeEnhancer(applyMiddleware(redux.createSagaMiddleware()));
 const store = createStore(
-  reducers,
-  composeEnhancers()
+   // Implement the rootReducer (i.e., Redux's default one)
+   reduceRrs,
+   // Specify which middlewares should be attached to Redux's store
+   [reduxMiddleware],
 );
 
+// Start rendering
 const container = document.getElementById('root');
-const root = createRoot(container);
+if (!container) {
+   console.error('Could not find root container');
+   return;
+}
 
-root.render(
-  <Provider store={store}>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
-  </Provider>
-);
+// Create the root Provider and inject it into App component
+const AppContainer = () => <Provider store={store}><App /></Provider>;
+
+// Render AppContainer to the DOM
+const tree = createRoot(container);
+tree.render(<AppContainer />);
