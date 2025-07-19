@@ -1,34 +1,36 @@
 import React, { Component } from 'react';
-import Redux from 'redux'; // Import the Redux library.
+import { connect } from 'react-redux';
+import { selectSong } from '../actions';
 
-// Import other libraries or utilities here
-
-const reducer = (state = initialState, action) => { // Define the reducer function.
-  switch(action.type) {
-    case 'ADD_TODO':
-      return Object.assign({}, state, { [action.payload]: true });
-    case 'REMOVE_TODO':
-      return Object.assign({}, state, { [action.payload]: false });
-    default:
-      return state; // Return the initial state if an action of unknown type is received.
+class SongList extends Component {
+  renderList() {
+    return this.props.songs.map(song => {
+      return (
+        <div className="item" key={song.title}>
+          <div className="right floated content">
+            <button
+              className="ui button primary"
+              onClick={() => this.props.selectSong(song)}
+            >
+              Select
+            </button>
+          </div>
+          <div className="content">{song.title}</div>
+        </div>
+      );
+    });
   }
-};
 
-const store = Redux.createStore(reducer); // Create a new Redux store instance with the reducer function.
-
-// Define our application component and wrap it in our Root component
-class App extends Component {
   render() {
-    return (
-      <div>
-        <button onClick={() => this.props.onClick()}>Add a todo</button>
-        <Redux dispatch={this.props.dispatch} store={store}>
-          <div>Todo list:</div>
-          <ul>
-            {this.props.todos.map((todo) => (<li key={todo.id}>{todo.text}</li>))}
-          </ul>
-        </Redux>
-      </div>
-    );
+    return <div className="ui divided list">{this.renderList()}</div>;
   }
 }
+
+const mapStateToProps = state => {
+  return { songs: state.songs };
+};
+
+export default connect(
+  mapStateToProps,
+  { selectSong }
+)(SongList);
