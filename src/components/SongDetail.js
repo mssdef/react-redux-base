@@ -1,11 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-const SongDetail = ({ song }) => {
+const SongDetail = () => {
+  const song = useSelector(state => state.selectedSong);
+
   if (song) {
     return (
-      <div className="ui segment">
+      <section className="ui segment">
         <h3 className="ui header" id="selected-song-header">Selected Song</h3>
         <div className="ui card fluid" role="region" aria-labelledby="selected-song-header">
           <div className="content">
@@ -28,7 +29,7 @@ const SongDetail = ({ song }) => {
             </button>
           </div>
         </div>
-      </div>
+      </section>
     );
   }
 
@@ -53,15 +54,4 @@ const SongDetail = ({ song }) => {
   );
 };
 
-SongDetail.propTypes = {
-  song: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    duration: PropTypes.string.isRequired
-  })
-};
-
-const mapStateToProps = (state) => {
-  return { song: state.selectedSong };
-};
-
-export default connect(mapStateToProps)(SongDetail);
+export default SongDetail;

@@ -1,16 +1,19 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { selectSong } from '../actions';
 
-class SongList extends Component {
-  renderList() {
-    return this.props.songs.map(song => {
+const SongList = () => {
+  const songs = useSelector(state => state.songs);
+  const dispatch = useDispatch();
+
+  const renderList = () => {
+    return songs.map(song => {
       return (
         <div className="item" key={song.title}>
           <div className="right floated content">
             <button
               className="ui button primary"
-              onClick={() => this.props.selectSong(song)}
+              onClick={() => dispatch(selectSong(song))}
             >
               Select
             </button>
@@ -19,18 +22,9 @@ class SongList extends Component {
         </div>
       );
     });
-  }
+  };
 
-  render() {
-    return <div className="ui divided list">{this.renderList()}</div>;
-  }
-}
-
-const mapStateToProps = state => {
-  return { songs: state.songs };
+  return <div className="ui divided list">{renderList()}</div>;
 };
 
-export default connect(
-  mapStateToProps,
-  { selectSong }
-)(SongList);
+export default SongList;

@@ -1,8 +1,33 @@
-- remove unnecessary calls to setState() for components that don't require any state change, such as when rendering a single item in a list
-- ensure the application uses efficient algorithms and operations when working with large datasets
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
+import SongList from '../SongList';
 
-improvement 5: add missing features that would enhance functionality
-- implement sorting by artist name or album title, or create a feature where users can sort results based on their preferences
-- add filtering capabilities for songs based on genre, release year, popularity, or any other criteria that would be useful to the user
+const mockStore = configureStore([]);
 
-by improving and optimizing these areas of the codebase, you'll make your project more efficient and enjoyable to use.
+describe('SongList', () => {
+  let store;
+
+  beforeEach(() => {
+    store = mockStore({
+      songs: [
+        { title: 'No Scrubs', duration: '4:05' },
+        { title: 'Macarena', duration: '2:30' },
+        { title: 'All Star', duration: '3:15' },
+        { title: 'I Want it That Way', duration: '1:45' },
+      ],
+    });
+  });
+
+  it('should render a list of songs', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    const songs = screen.getAllByRole('listitem');
+    expect(songs).toHaveLength(4);
+  });
+});
