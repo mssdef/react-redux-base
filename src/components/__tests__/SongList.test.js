@@ -27,7 +27,10 @@ describe('SongList', () => {
       </Provider>
     );
 
-    const songs = screen.getAllByRole('listitem');
-    expect(songs).toHaveLength(4);
+    expect(screen.getByText('No Scrubs')).toBeTruthy();
+    expect(screen.getByText('Macarena')).toBeTruthy();
+    expect(screen.getByText('All Star')).toBeTruthy();
+    expect(screen.getByText('I Want it That Way')).toBeTruthy();
+    expect(screen.getAllByRole('button', { name: 'Select' })).toHaveLength(4);
   });
 });
