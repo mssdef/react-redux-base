@@ -3,6 +3,9 @@
 /ai-agent
 /.idea
 
+.local
+.cursor
+
 # dependencies
 /node_modules
 /.pnp
