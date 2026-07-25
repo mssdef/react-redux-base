@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 const SongDetail = () => {
   const song = useSelector(state => state.selectedSong);
+  const [currentTime, setCurrentTime] = useState(0);
 
   if (song) {
     return (
@@ -27,6 +28,15 @@ const SongDetail = () => {
               <i className="play icon" aria-hidden="true"></i>
               Play Song
             </button>
+            <input
+              type="range"
+              min="0"
+              max={song.duration}
+              value={currentTime}
+              onChange={(e) => setCurrentTime(e.target.value)}
+              className="ui range input fluid"
+              aria-label={`Seek bar for ${song.title}`}
+            />
           </div>
         </div>
       </section>
