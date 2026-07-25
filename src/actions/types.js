@@ -1,1 +1,2 @@
 export const SONG_SELECTED = 'SONG_SELECTED';
+export const VOLUME_CHANGED = 'VOLUME_CHANGED';

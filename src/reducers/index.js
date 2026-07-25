@@ -14,6 +14,10 @@ const selectedSongReducer = (selectedSong = null, action) => {
   return selectedSong;
 };
 
+const volumeReducer = (volume = 50, action) => {
+  return volume;
+};
+
 export default combineReducers({
   songs: songsReducer,
   selectedSong: selectedSongReducer
