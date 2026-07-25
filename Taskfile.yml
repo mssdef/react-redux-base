@@ -1,6 +1,12 @@
 version: "3"
 
 tasks:
+  default:
+    desc: List all available tasks
+    cmds:
+      - task --list
+    silent: true
+
   deps:
     desc: Install npm dependencies
     cmds:
@@ -22,7 +28,7 @@ tasks:
     cmds:
       - npm run build
 
-  generate-next-update:
+  ai-generate-project-update:
     desc: Implement next .local/PLAN.md feature via factory + Ollama
     cmds:
       - .local/bin/generate-next-update.sh
