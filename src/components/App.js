@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Slider } from '@material-ui/core';
+import volumeReducer, { setVolume } from '../reducers/volumeReducer';
 
 const App = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const dispatch = useDispatch();
+  const volume = useSelector(state => state.volume);
 
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
+  const handleSliderChange = (event, value) => {
+    dispatch(setVolume(value));
   };
 
   return (
-    <div className="App">
-      <h1>React Redux Music Player</h1>
-      <button onClick={handlePlayPause}>{isPlaying ? 'Pause' : 'Play'}</button>
+    <div>
+      <h1>Volume Control</h1>
+      <Slider
+        min={0}
+        max={1}
+        step={0.01}
+        value={volume}
+        onChange={handleSliderChange}
+      />
     </div>
   );
 };

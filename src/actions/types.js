@@ -1,1 +1,1 @@
-export const SONG_SELECTED = 'SONG_SELECTED';
+export const SET_VOLUME = 'SET_VOLUME';
