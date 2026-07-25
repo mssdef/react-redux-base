@@ -13,7 +13,7 @@ const SongDetail = () => {
           <div className="content">
             <div className="header" role="heading" aria-level="4">{song.title}</div>
             <div className="meta">
-              <span className="duration">Duration: {song.duration}</span>
+              <span className="duration">{currentTime} / {song.duration}</span>
             </div>
             <div className="description">
               <p>Click the play button below to start listening to this track.</p>
