@@ -1,21 +1,16 @@
-import React from 'react';
-import SongList from './SongList';
-import SongDetail from './SongDetail';
-import ErrorBoundary from './ErrorBoundary';
+import React, { useState } from 'react';
 
 const App = () => {
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handlePlayPause = () => {
+    setIsPlaying(!isPlaying);
+  };
+
   return (
-    <div className="ui container grid">
-      <div className="ui row">
-        <div className="column eight wide">
-          <ErrorBoundary>
-            <SongList />
-          </ErrorBoundary>
-        </div>
-        <div className="column eight wide">
-          <SongDetail />
-        </div>
-      </div>
+    <div className="App">
+      <h1>React Redux Music Player</h1>
+      <button onClick={handlePlayPause}>{isPlaying ? 'Pause' : 'Play'}</button>
     </div>
   );
 };
