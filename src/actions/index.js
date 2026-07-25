@@ -1,6 +1,8 @@
-import { SET_VOLUME } from './types';
+import { SONG_SELECTED } from './types';
 
-export const setVolume = (volume) => ({
-  type: SET_VOLUME,
-  payload: volume,
-});
+export const selectSong = song => {
+  return {
+    type: SONG_SELECTED,
+    payload: song
+  };
+};
