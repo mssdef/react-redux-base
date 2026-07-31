@@ -17,6 +17,7 @@ describe('SongList', () => {
         { title: 'All Star', duration: '3:15' },
         { title: 'I Want it That Way', duration: '1:45' },
       ],
+      currentSongIndex: 0,
     });
   });
 
@@ -32,5 +33,6 @@ describe('SongList', () => {
     expect(screen.getByText('All Star')).toBeTruthy();
     expect(screen.getByText('I Want it That Way')).toBeTruthy();
     expect(screen.getAllByRole('button', { name: 'Select' })).toHaveLength(4);
+    expect(screen.getByRole('button', { name: 'Next' })).toBeInTheDocument();
   });
 });

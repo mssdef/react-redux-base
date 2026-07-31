@@ -1,17 +1,12 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { nextSong } from '../actions';
-import { SONGS_DATA } from '../data/songs';
-import { selectSong } from '../actions';
+
+import { selectSong, nextSong } from '../actions';
 
 const SongList = () => {
   const songs = useSelector(state => state.songs);
   const dispatch = useDispatch();
-  const [currentSongIndex, setCurrentSongIndex] = React.useState(0);
-
-  const nextSong = () => {
-    setCurrentSongIndex(prevIndex => (prevIndex + 1) % songs.length);
-  };
+  const currentSongIndex = useSelector(state => state.currentSongIndex);
 
   const renderList = () => {
     return songs.map((song, index) => {
@@ -27,7 +22,7 @@ const SongList = () => {
             {index === currentSongIndex && (
               <button
                 className="ui button"
-                onClick={nextSong}
+                onClick={() => dispatch(nextSong())}
               >
                 Next
               </button>
