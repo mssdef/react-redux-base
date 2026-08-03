@@ -1,12 +1,13 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { selectSong, nextSong, previousSong } from '../actions';
+import { selectSong, nextSong, previousSong, cycleRepeatMode } from '../actions';
 
 const SongList = () => {
   const songs = useSelector(state => state.songs);
   const dispatch = useDispatch();
   const currentSongIndex = useSelector(state => state.currentSongIndex);
+  const repeatMode = useSelector(state => state.repeatMode);
 
   const renderList = () => {
     return songs.map((song, index) => {
@@ -32,6 +33,13 @@ const SongList = () => {
                   onClick={() => dispatch(previousSong())}
                 >
                   Previous
+                </button>
+                <button
+                  className="ui button"
+                  onClick={() => dispatch(cycleRepeatMode())}
+                  aria-label={`Repeat: ${repeatMode}`}
+                >
+                  Repeat: {repeatMode}
                 </button>
               </>
             )}

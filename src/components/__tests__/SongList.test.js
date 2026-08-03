@@ -18,6 +18,7 @@ describe('SongList', () => {
         { title: 'I Want it That Way', duration: '1:45' },
       ],
       currentSongIndex: 1,
+      repeatMode: 'none',
     });
   });
 
@@ -57,6 +58,7 @@ describe('SongList', () => {
         { title: 'Macarena', duration: '2:30' },
       ],
       currentSongIndex: 0,
+      repeatMode: 'none',
     });
 
     render(
@@ -66,5 +68,49 @@ describe('SongList', () => {
     );
 
     expect(screen.getByRole('button', { name: 'Previous' })).toBeInTheDocument();
+  });
+
+  it('should render repeat button showing current repeat mode for current song', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    expect(screen.getByRole('button', { name: 'Repeat: none' })).toBeInTheDocument();
+  });
+
+  it('should dispatch REPEAT_MODE_CHANGED when Repeat button is clicked', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Repeat: none' }));
+
+    const actions = store.getActions();
+    expect(actions).toContainEqual({ type: 'REPEAT_MODE_CHANGED' });
+  });
+
+  it('should display updated repeat mode label when store state changes', () => {
+    const oneStore = mockStore({
+      songs: [
+        { title: 'No Scrubs', duration: '4:05' },
+        { title: 'Macarena', duration: '2:30' },
+        { title: 'All Star', duration: '3:15' },
+        { title: 'I Want it That Way', duration: '1:45' },
+      ],
+      currentSongIndex: 1,
+      repeatMode: 'one',
+    });
+
+    render(
+      <Provider store={oneStore}>
+        <SongList />
+      </Provider>
+    );
+
+    expect(screen.getByRole('button', { name: 'Repeat: one' })).toBeInTheDocument();
   });
 });

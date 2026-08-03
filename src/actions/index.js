@@ -1,4 +1,4 @@
-import { SONG_SELECTED } from './types';
+import { SONG_SELECTED, REPEAT_MODE_CHANGED } from './types';
 
 export const selectSong = song => {
   return {
@@ -16,5 +16,11 @@ export const nextSong = () => {
 export const previousSong = () => {
   return {
     type: 'PREVIOUS_SONG'
+  };
+};
+
+export const cycleRepeatMode = () => {
+  return {
+    type: REPEAT_MODE_CHANGED
   };
 };

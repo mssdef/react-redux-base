@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux';
 import { SONGS_DATA } from '../data/songs';
-import { SONG_SELECTED } from '../actions/types';
+import { SONG_SELECTED, REPEAT_MODE_CHANGED } from '../actions/types';
+
+const REPEAT_MODES = ['none', 'one', 'all'];
 
 const songsReducer = () => {
   return SONGS_DATA;
@@ -26,8 +28,17 @@ const nextSongReducer = (currentSongIndex = 0, action) => {
   return currentSongIndex;
 };
 
+const repeatModeReducer = (repeatMode = 'none', action) => {
+  if (action.type === REPEAT_MODE_CHANGED) {
+    const currentIndex = REPEAT_MODES.indexOf(repeatMode);
+    return REPEAT_MODES[(currentIndex + 1) % REPEAT_MODES.length];
+  }
+  return repeatMode;
+};
+
 export default combineReducers({
   songs: songsReducer,
   selectedSong: selectedSongReducer,
-  currentSongIndex: nextSongReducer
+  currentSongIndex: nextSongReducer,
+  repeatMode: repeatModeReducer
 });
