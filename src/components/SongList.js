@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { selectSong, nextSong } from '../actions';
+import { selectSong, nextSong, previousSong } from '../actions';
 
 const SongList = () => {
   const songs = useSelector(state => state.songs);
@@ -20,18 +20,20 @@ const SongList = () => {
               Select
             </button>
             {index === currentSongIndex && (
-              <button
-                className="ui button"
-                onClick={() => dispatch(nextSong())}
-              >
-                Next
-              </button>
-              <button
-                className="ui button"
-                onClick={() => dispatch(previousSong())}
-              >
-                Previous
-              </button>
+              <>
+                <button
+                  className="ui button"
+                  onClick={() => dispatch(nextSong())}
+                >
+                  Next
+                </button>
+                <button
+                  className="ui button"
+                  onClick={() => dispatch(previousSong())}
+                >
+                  Previous
+                </button>
+              </>
             )}
           </div>
           <div className="content">{song.title}</div>
