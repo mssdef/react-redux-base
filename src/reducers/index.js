@@ -14,11 +14,13 @@ const selectedSongReducer = (selectedSong = null, action) => {
   return selectedSong;
 };
 
-
-
 const nextSongReducer = (currentSongIndex = 0, action) => {
   if (action.type === 'NEXT_SONG') {
     return (currentSongIndex + 1) % SONGS_DATA.length;
+  }
+
+  if (action.type === 'PREVIOUS_SONG') {
+    return (currentSongIndex - 1 + SONGS_DATA.length) % SONGS_DATA.length;
   }
 
   return currentSongIndex;

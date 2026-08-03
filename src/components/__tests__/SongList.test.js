@@ -17,11 +17,11 @@ describe('SongList', () => {
         { title: 'All Star', duration: '3:15' },
         { title: 'I Want it That Way', duration: '1:45' },
       ],
-      currentSongIndex: 0,
+      currentSongIndex: 1,
     });
   });
 
-  it('should render a list of songs', () => {
+  it('should render a list of songs and previous button when current song is not first', () => {
     render(
       <Provider store={store}>
         <SongList />
@@ -34,5 +34,6 @@ describe('SongList', () => {
     expect(screen.getByText('I Want it That Way')).toBeTruthy();
     expect(screen.getAllByRole('button', { name: 'Select' })).toHaveLength(4);
     expect(screen.getByRole('button', { name: 'Next' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Previous' })).toBeInTheDocument();
   });
 });

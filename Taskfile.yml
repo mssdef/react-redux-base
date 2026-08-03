@@ -29,6 +29,6 @@ tasks:
       - npm run build
 
   ai-generate-project-update:
-    desc: Implement next .local/PLAN.md feature via factory + Ollama
+    desc: Implement next .local/PLAN.md feature via Claude Code
     cmds:
       - .local/bin/generate-next-update.sh

@@ -26,6 +26,12 @@ const SongList = () => {
               >
                 Next
               </button>
+              <button
+                className="ui button"
+                onClick={() => dispatch(previousSong())}
+              >
+                Previous
+              </button>
             )}
           </div>
           <div className="content">{song.title}</div>

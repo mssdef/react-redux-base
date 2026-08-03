@@ -12,3 +12,9 @@ export const nextSong = () => {
     type: 'NEXT_SONG'
   };
 };
+
+export const previousSong = () => {
+  return {
+    type: 'PREVIOUS_SONG'
+  };
+};
