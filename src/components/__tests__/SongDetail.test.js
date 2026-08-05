@@ -30,6 +30,39 @@ describe('SongDetail auto-advance', () => {
   });
 });
 
+describe('SongDetail mute toggle', () => {
+  it('renders Mute button when song is selected', () => {
+    const store = mockStore({ selectedSong: song, shuffle: false, repeatMode: 'none' });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    expect(screen.getByRole('button', { name: 'Mute' })).toBeInTheDocument();
+  });
+
+  it('shows Unmute after clicking Mute', () => {
+    const store = mockStore({ selectedSong: song, shuffle: false, repeatMode: 'none' });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    fireEvent.click(screen.getByRole('button', { name: 'Mute' }));
+    expect(screen.getByRole('button', { name: 'Unmute' })).toBeInTheDocument();
+  });
+
+  it('shows Mute again after clicking Unmute', () => {
+    const store = mockStore({ selectedSong: song, shuffle: false, repeatMode: 'none' });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    fireEvent.click(screen.getByRole('button', { name: 'Mute' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Unmute' }));
+    expect(screen.getByRole('button', { name: 'Mute' })).toBeInTheDocument();
+  });
+
+  it('preserves audio volume after muting and unmuting', () => {
+    const store = mockStore({ selectedSong: song, shuffle: false, repeatMode: 'none' });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    const audio = document.querySelector('audio');
+    audio.volume = 0.5;
+    fireEvent.click(screen.getByRole('button', { name: 'Mute' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Unmute' }));
+    expect(audio.volume).toBe(0.5);
+  });
+});
+
 describe('SongDetail keyboard shortcuts', () => {
   beforeAll(() => {
     window.HTMLMediaElement.prototype.play = jest.fn().mockResolvedValue(undefined);
