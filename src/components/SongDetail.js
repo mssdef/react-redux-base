@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { nextSong, shuffleNext } from '../actions';
 
 const SongDetail = () => {
   const song = useSelector(state => state.selectedSong);
   const [currentTime, setCurrentTime] = useState(0);
+  const shuffle = useSelector(state => state.shuffle);
+  const repeatMode = useSelector(state => state.repeatMode);
+  const dispatch = useDispatch();
+
+  const handleEnded = () => {
+    if (repeatMode === 'one') return;
+    dispatch(shuffle ? shuffleNext() : nextSong());
+  };
 
   if (song) {
     return (
@@ -20,7 +29,8 @@ const SongDetail = () => {
             </div>
           </div>
           <div className="extra content">
-            <button 
+            <audio onEnded={handleEnded} aria-label={`Audio player for ${song.title}`} />
+            <button
               className="ui button primary fluid"
               aria-label={`Play ${song.title}`}
               type="button"
