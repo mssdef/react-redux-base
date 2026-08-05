@@ -1,13 +1,14 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { selectSong, nextSong, previousSong, cycleRepeatMode } from '../actions';
+import { selectSong, nextSong, previousSong, cycleRepeatMode, toggleShuffle, shuffleNext } from '../actions';
 
 const SongList = () => {
   const songs = useSelector(state => state.songs);
   const dispatch = useDispatch();
   const currentSongIndex = useSelector(state => state.currentSongIndex);
   const repeatMode = useSelector(state => state.repeatMode);
+  const shuffle = useSelector(state => state.shuffle);
 
   const renderList = () => {
     return songs.map((song, index) => {
@@ -24,7 +25,7 @@ const SongList = () => {
               <>
                 <button
                   className="ui button"
-                  onClick={() => dispatch(nextSong())}
+                  onClick={() => dispatch(shuffle ? shuffleNext() : nextSong())}
                 >
                   Next
                 </button>
@@ -40,6 +41,14 @@ const SongList = () => {
                   aria-label={`Repeat: ${repeatMode}`}
                 >
                   Repeat: {repeatMode}
+                </button>
+                <button
+                  className={`ui button${shuffle ? ' active' : ''}`}
+                  onClick={() => dispatch(toggleShuffle())}
+                  aria-label={`Shuffle: ${shuffle ? 'on' : 'off'}`}
+                  aria-pressed={shuffle}
+                >
+                  Shuffle: {shuffle ? 'on' : 'off'}
                 </button>
               </>
             )}

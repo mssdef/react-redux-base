@@ -19,6 +19,7 @@ describe('SongList', () => {
       ],
       currentSongIndex: 1,
       repeatMode: 'none',
+      shuffle: false,
     });
   });
 
@@ -59,6 +60,7 @@ describe('SongList', () => {
       ],
       currentSongIndex: 0,
       repeatMode: 'none',
+      shuffle: false,
     });
 
     render(
@@ -103,6 +105,7 @@ describe('SongList', () => {
       ],
       currentSongIndex: 1,
       repeatMode: 'one',
+      shuffle: false,
     });
 
     render(
@@ -112,5 +115,88 @@ describe('SongList', () => {
     );
 
     expect(screen.getByRole('button', { name: 'Repeat: one' })).toBeInTheDocument();
+  });
+
+  it('should render shuffle button showing off when shuffle is false', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    expect(screen.getByRole('button', { name: 'Shuffle: off' })).toBeInTheDocument();
+  });
+
+  it('should render shuffle button showing on when shuffle is true', () => {
+    const shuffleOnStore = mockStore({
+      songs: [
+        { title: 'No Scrubs', duration: '4:05' },
+        { title: 'Macarena', duration: '2:30' },
+        { title: 'All Star', duration: '3:15' },
+        { title: 'I Want it That Way', duration: '1:45' },
+      ],
+      currentSongIndex: 1,
+      repeatMode: 'none',
+      shuffle: true,
+    });
+
+    render(
+      <Provider store={shuffleOnStore}>
+        <SongList />
+      </Provider>
+    );
+
+    expect(screen.getByRole('button', { name: 'Shuffle: on' })).toBeInTheDocument();
+  });
+
+  it('should dispatch SHUFFLE_TOGGLED when Shuffle button is clicked', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Shuffle: off' }));
+
+    const actions = store.getActions();
+    expect(actions).toContainEqual({ type: 'SHUFFLE_TOGGLED' });
+  });
+
+  it('should dispatch NEXT_SONG_SHUFFLE when Next is clicked and shuffle is on', () => {
+    const shuffleOnStore = mockStore({
+      songs: [
+        { title: 'No Scrubs', duration: '4:05' },
+        { title: 'Macarena', duration: '2:30' },
+        { title: 'All Star', duration: '3:15' },
+        { title: 'I Want it That Way', duration: '1:45' },
+      ],
+      currentSongIndex: 1,
+      repeatMode: 'none',
+      shuffle: true,
+    });
+
+    render(
+      <Provider store={shuffleOnStore}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+
+    const actions = shuffleOnStore.getActions();
+    expect(actions).toContainEqual({ type: 'NEXT_SONG_SHUFFLE' });
+  });
+
+  it('should dispatch NEXT_SONG when Next is clicked and shuffle is off', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+
+    const actions = store.getActions();
+    expect(actions).toContainEqual({ type: 'NEXT_SONG' });
   });
 });
