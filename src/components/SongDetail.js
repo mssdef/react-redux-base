@@ -1,18 +1,71 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { nextSong, shuffleNext } from '../actions';
 
 const SongDetail = () => {
   const song = useSelector(state => state.selectedSong);
   const [currentTime, setCurrentTime] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
   const shuffle = useSelector(state => state.shuffle);
   const repeatMode = useSelector(state => state.repeatMode);
   const dispatch = useDispatch();
+  const audioRef = useRef(null);
 
   const handleEnded = () => {
+    setIsPlaying(false);
     if (repeatMode === 'one') return;
     dispatch(shuffle ? shuffleNext() : nextSong());
   };
+
+  const togglePlay = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isPlaying) {
+      audio.pause();
+      setIsPlaying(false);
+    } else {
+      const playPromise = audio.play();
+      if (playPromise !== undefined) playPromise.catch(() => {});
+      setIsPlaying(true);
+    }
+  }, [isPlaying]);
+
+  const toggleMute = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.muted = !audio.muted;
+    setIsMuted(audio.muted);
+  }, []);
+
+  const seek = useCallback((delta) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.currentTime = Math.max(0, audio.currentTime + delta);
+    setCurrentTime(audio.currentTime);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!song) return;
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.code === 'Space') {
+        e.preventDefault();
+        togglePlay();
+      } else if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        seek(-10);
+      } else if (e.code === 'ArrowRight') {
+        e.preventDefault();
+        seek(10);
+      } else if (e.key === 'm' || e.key === 'M') {
+        toggleMute();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [song, togglePlay, seek, toggleMute]);
 
   if (song) {
     return (
@@ -29,14 +82,24 @@ const SongDetail = () => {
             </div>
           </div>
           <div className="extra content">
-            <audio onEnded={handleEnded} aria-label={`Audio player for ${song.title}`} />
+            <audio ref={audioRef} onEnded={handleEnded} aria-label={`Audio player for ${song.title}`} />
             <button
               className="ui button primary fluid"
-              aria-label={`Play ${song.title}`}
+              aria-label={isPlaying ? `Pause ${song.title}` : `Play ${song.title}`}
               type="button"
+              onClick={togglePlay}
             >
-              <i className="play icon" aria-hidden="true"></i>
-              Play Song
+              <i className={`${isPlaying ? 'pause' : 'play'} icon`} aria-hidden="true"></i>
+              {isPlaying ? 'Pause' : 'Play'} Song
+            </button>
+            <button
+              className="ui button fluid"
+              aria-label={isMuted ? 'Unmute' : 'Mute'}
+              type="button"
+              onClick={toggleMute}
+            >
+              <i className={`volume ${isMuted ? 'off' : 'up'} icon`} aria-hidden="true"></i>
+              {isMuted ? 'Unmute' : 'Mute'}
             </button>
             <input
               type="range"
@@ -56,9 +119,9 @@ const SongDetail = () => {
   return (
     <div className="ui segment">
       <h3 className="ui header" id="selected-song-header">Selected Song</h3>
-      <div 
-        className="ui placeholder" 
-        role="status" 
+      <div
+        className="ui placeholder"
+        role="status"
         aria-label="No song selected"
         aria-labelledby="selected-song-header"
       >
