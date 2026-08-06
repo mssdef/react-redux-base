@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { SONGS_DATA } from '../data/songs';
-import { SONG_SELECTED, REPEAT_MODE_CHANGED, SHUFFLE_TOGGLED } from '../actions/types';
+import { SONG_SELECTED, REPEAT_MODE_CHANGED, SHUFFLE_TOGGLED, PLAYBACK_SPEED_CHANGED } from '../actions/types';
 
 const REPEAT_MODES = ['none', 'one', 'all'];
 
@@ -54,10 +54,18 @@ const shuffleReducer = (shuffle = storedShuffle, action) => {
   return shuffle;
 };
 
+const playbackSpeedReducer = (playbackSpeed = 1, action) => {
+  if (action.type === PLAYBACK_SPEED_CHANGED) {
+    return action.payload;
+  }
+  return playbackSpeed;
+};
+
 export default combineReducers({
   songs: songsReducer,
   selectedSong: selectedSongReducer,
   currentSongIndex: nextSongReducer,
   repeatMode: repeatModeReducer,
-  shuffle: shuffleReducer
+  shuffle: shuffleReducer,
+  playbackSpeed: playbackSpeedReducer
 });

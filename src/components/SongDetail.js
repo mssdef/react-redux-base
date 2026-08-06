@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { nextSong, shuffleNext } from '../actions';
+import { nextSong, shuffleNext, setPlaybackSpeed } from '../actions';
 
 const SongDetail = () => {
   const song = useSelector(state => state.selectedSong);
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const playbackSpeed = useSelector(state => state.playbackSpeed);
   const shuffle = useSelector(state => state.shuffle);
   const repeatMode = useSelector(state => state.repeatMode);
   const dispatch = useDispatch();
@@ -37,6 +38,16 @@ const SongDetail = () => {
     audio.muted = !audio.muted;
     setIsMuted(audio.muted);
   }, []);
+
+  const handleSpeedChange = useCallback((e) => {
+    const speed = parseFloat(e.target.value);
+    if (audioRef.current) audioRef.current.playbackRate = speed;
+    dispatch(setPlaybackSpeed(speed));
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (audioRef.current && playbackSpeed) audioRef.current.playbackRate = playbackSpeed;
+  }, [playbackSpeed]);
 
   const seek = useCallback((delta) => {
     const audio = audioRef.current;
@@ -110,6 +121,20 @@ const SongDetail = () => {
               className="ui range input fluid"
               aria-label={`Seek bar for ${song.title}`}
             />
+            <div className="ui labeled input" style={{ marginTop: '0.5em' }}>
+              <label className="ui label" htmlFor="playback-speed">Speed</label>
+              <select
+                id="playback-speed"
+                className="ui compact selection dropdown"
+                value={playbackSpeed}
+                onChange={handleSpeedChange}
+                aria-label="Playback speed"
+              >
+                {[0.5, 0.75, 1, 1.25, 1.5, 2].map(speed => (
+                  <option key={speed} value={speed}>{speed}×</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       </section>

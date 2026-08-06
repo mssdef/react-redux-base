@@ -7,23 +7,25 @@ import SongDetail from '../SongDetail';
 const mockStore = configureStore([]);
 const song = { title: 'No Scrubs', duration: '4:05' };
 
+const baseState = { selectedSong: song, shuffle: false, repeatMode: 'none', playbackSpeed: 1 };
+
 describe('SongDetail auto-advance', () => {
   it('dispatches NEXT_SONG when audio ends and shuffle is off', () => {
-    const store = mockStore({ selectedSong: song, shuffle: false, repeatMode: 'none' });
+    const store = mockStore({ ...baseState });
     render(<Provider store={store}><SongDetail /></Provider>);
     fireEvent(document.querySelector('audio'), new Event('ended'));
     expect(store.getActions()).toContainEqual({ type: 'NEXT_SONG' });
   });
 
   it('dispatches NEXT_SONG_SHUFFLE when audio ends and shuffle is on', () => {
-    const store = mockStore({ selectedSong: song, shuffle: true, repeatMode: 'none' });
+    const store = mockStore({ ...baseState, shuffle: true });
     render(<Provider store={store}><SongDetail /></Provider>);
     fireEvent(document.querySelector('audio'), new Event('ended'));
     expect(store.getActions()).toContainEqual({ type: 'NEXT_SONG_SHUFFLE' });
   });
 
   it('does not dispatch when audio ends and repeatMode is one', () => {
-    const store = mockStore({ selectedSong: song, shuffle: false, repeatMode: 'one' });
+    const store = mockStore({ ...baseState, repeatMode: 'one' });
     render(<Provider store={store}><SongDetail /></Provider>);
     fireEvent(document.querySelector('audio'), new Event('ended'));
     expect(store.getActions()).toHaveLength(0);
@@ -32,20 +34,20 @@ describe('SongDetail auto-advance', () => {
 
 describe('SongDetail mute toggle', () => {
   it('renders Mute button when song is selected', () => {
-    const store = mockStore({ selectedSong: song, shuffle: false, repeatMode: 'none' });
+    const store = mockStore({ ...baseState });
     render(<Provider store={store}><SongDetail /></Provider>);
     expect(screen.getByRole('button', { name: 'Mute' })).toBeInTheDocument();
   });
 
   it('shows Unmute after clicking Mute', () => {
-    const store = mockStore({ selectedSong: song, shuffle: false, repeatMode: 'none' });
+    const store = mockStore({ ...baseState });
     render(<Provider store={store}><SongDetail /></Provider>);
     fireEvent.click(screen.getByRole('button', { name: 'Mute' }));
     expect(screen.getByRole('button', { name: 'Unmute' })).toBeInTheDocument();
   });
 
   it('shows Mute again after clicking Unmute', () => {
-    const store = mockStore({ selectedSong: song, shuffle: false, repeatMode: 'none' });
+    const store = mockStore({ ...baseState });
     render(<Provider store={store}><SongDetail /></Provider>);
     fireEvent.click(screen.getByRole('button', { name: 'Mute' }));
     fireEvent.click(screen.getByRole('button', { name: 'Unmute' }));
@@ -53,7 +55,7 @@ describe('SongDetail mute toggle', () => {
   });
 
   it('preserves audio volume after muting and unmuting', () => {
-    const store = mockStore({ selectedSong: song, shuffle: false, repeatMode: 'none' });
+    const store = mockStore({ ...baseState });
     render(<Provider store={store}><SongDetail /></Provider>);
     const audio = document.querySelector('audio');
     audio.volume = 0.5;
@@ -75,20 +77,20 @@ describe('SongDetail keyboard shortcuts', () => {
   });
 
   it('renders play button when a song is selected', () => {
-    const store = mockStore({ selectedSong: song, shuffle: false, repeatMode: 'none' });
+    const store = mockStore({ ...baseState });
     render(<Provider store={store}><SongDetail /></Provider>);
     expect(screen.getByRole('button', { name: /play no scrubs/i })).toBeInTheDocument();
   });
 
   it('Space key plays the audio when paused', () => {
-    const store = mockStore({ selectedSong: song, shuffle: false, repeatMode: 'none' });
+    const store = mockStore({ ...baseState });
     render(<Provider store={store}><SongDetail /></Provider>);
     fireEvent.keyDown(document, { code: 'Space', key: ' ' });
     expect(window.HTMLMediaElement.prototype.play).toHaveBeenCalled();
   });
 
   it('Space key pauses the audio when playing', () => {
-    const store = mockStore({ selectedSong: song, shuffle: false, repeatMode: 'none' });
+    const store = mockStore({ ...baseState });
     render(<Provider store={store}><SongDetail /></Provider>);
     fireEvent.keyDown(document, { code: 'Space', key: ' ' });
     fireEvent.keyDown(document, { code: 'Space', key: ' ' });
@@ -96,7 +98,7 @@ describe('SongDetail keyboard shortcuts', () => {
   });
 
   it('M key toggles mute on', () => {
-    const store = mockStore({ selectedSong: song, shuffle: false, repeatMode: 'none' });
+    const store = mockStore({ ...baseState });
     render(<Provider store={store}><SongDetail /></Provider>);
     expect(screen.getByRole('button', { name: 'Mute' })).toBeInTheDocument();
     fireEvent.keyDown(document, { code: 'KeyM', key: 'm' });
@@ -104,7 +106,7 @@ describe('SongDetail keyboard shortcuts', () => {
   });
 
   it('M key toggles mute off', () => {
-    const store = mockStore({ selectedSong: song, shuffle: false, repeatMode: 'none' });
+    const store = mockStore({ ...baseState });
     render(<Provider store={store}><SongDetail /></Provider>);
     fireEvent.keyDown(document, { code: 'KeyM', key: 'm' });
     fireEvent.keyDown(document, { code: 'KeyM', key: 'm' });
@@ -112,7 +114,7 @@ describe('SongDetail keyboard shortcuts', () => {
   });
 
   it('ArrowRight seeks forward 10s', () => {
-    const store = mockStore({ selectedSong: song, shuffle: false, repeatMode: 'none' });
+    const store = mockStore({ ...baseState });
     render(<Provider store={store}><SongDetail /></Provider>);
     const audio = document.querySelector('audio');
     audio.currentTime = 5;
@@ -121,7 +123,7 @@ describe('SongDetail keyboard shortcuts', () => {
   });
 
   it('ArrowLeft seeks backward 10s', () => {
-    const store = mockStore({ selectedSong: song, shuffle: false, repeatMode: 'none' });
+    const store = mockStore({ ...baseState });
     render(<Provider store={store}><SongDetail /></Provider>);
     const audio = document.querySelector('audio');
     audio.currentTime = 20;
@@ -130,7 +132,7 @@ describe('SongDetail keyboard shortcuts', () => {
   });
 
   it('ArrowLeft clamps seek to 0', () => {
-    const store = mockStore({ selectedSong: song, shuffle: false, repeatMode: 'none' });
+    const store = mockStore({ ...baseState });
     render(<Provider store={store}><SongDetail /></Provider>);
     const audio = document.querySelector('audio');
     audio.currentTime = 3;
@@ -139,9 +141,46 @@ describe('SongDetail keyboard shortcuts', () => {
   });
 
   it('keyboard shortcuts are ignored when no song is selected', () => {
-    const store = mockStore({ selectedSong: null, shuffle: false, repeatMode: 'none' });
+    const store = mockStore({ ...baseState, selectedSong: null });
     render(<Provider store={store}><SongDetail /></Provider>);
     fireEvent.keyDown(document, { code: 'Space', key: ' ' });
     expect(window.HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
+  });
+});
+
+describe('SongDetail playback speed', () => {
+  it('renders speed selector with default 1x selected', () => {
+    const store = mockStore({ ...baseState });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    const select = screen.getByLabelText('Playback speed');
+    expect(select).toBeTruthy();
+    expect(select.value).toBe('1');
+  });
+
+  it('renders all speed options', () => {
+    const store = mockStore({ ...baseState });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    const select = screen.getByLabelText('Playback speed');
+    const options = Array.from(select.options).map(o => o.value);
+    expect(options).toEqual(['0.5', '0.75', '1', '1.25', '1.5', '2']);
+  });
+
+  it('dispatches PLAYBACK_SPEED_CHANGED with correct payload when speed changes', () => {
+    const store = mockStore({ ...baseState });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    fireEvent.change(screen.getByLabelText('Playback speed'), { target: { value: '1.5' } });
+    expect(store.getActions()).toContainEqual({ type: 'PLAYBACK_SPEED_CHANGED', payload: 1.5 });
+  });
+
+  it('reflects stored playback speed from redux state', () => {
+    const store = mockStore({ ...baseState, playbackSpeed: 2 });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    expect(screen.getByLabelText('Playback speed').value).toBe('2');
+  });
+
+  it('does not render speed selector when no song is selected', () => {
+    const store = mockStore({ ...baseState, selectedSong: null });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    expect(screen.queryByLabelText('Playback speed')).toBeNull();
   });
 });

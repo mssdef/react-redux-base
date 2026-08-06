@@ -1,4 +1,4 @@
-import { SONG_SELECTED, REPEAT_MODE_CHANGED, SHUFFLE_TOGGLED } from './types';
+import { SONG_SELECTED, REPEAT_MODE_CHANGED, SHUFFLE_TOGGLED, PLAYBACK_SPEED_CHANGED } from './types';
 
 export const selectSong = song => {
   return {
@@ -34,5 +34,12 @@ export const toggleShuffle = () => {
 export const shuffleNext = () => {
   return {
     type: 'NEXT_SONG_SHUFFLE'
+  };
+};
+
+export const setPlaybackSpeed = (speed) => {
+  return {
+    type: PLAYBACK_SPEED_CHANGED,
+    payload: speed
   };
 };
