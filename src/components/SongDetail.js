@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { nextSong, shuffleNext, setPlaybackSpeed } from '../actions';
+import FullScreenPlayer from './FullScreenPlayer';
 
 const SongDetail = () => {
   const song = useSelector(state => state.selectedSong);
@@ -12,6 +13,7 @@ const SongDetail = () => {
   const repeatMode = useSelector(state => state.repeatMode);
   const dispatch = useDispatch();
   const audioRef = useRef(null);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   const handleEnded = () => {
     setIsPlaying(false);
@@ -58,6 +60,10 @@ const SongDetail = () => {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
+      if (e.code === 'Escape' && isFullScreen) {
+        setIsFullScreen(false);
+        return;
+      }
       if (!song) return;
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       if (e.code === 'Space') {
@@ -76,11 +82,19 @@ const SongDetail = () => {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [song, togglePlay, seek, toggleMute]);
+  }, [song, togglePlay, seek, toggleMute, isFullScreen]);
 
   if (song) {
     return (
       <section className="ui segment">
+        {isFullScreen && (
+          <FullScreenPlayer
+            song={song}
+            isPlaying={isPlaying}
+            onTogglePlay={togglePlay}
+            onClose={() => setIsFullScreen(false)}
+          />
+        )}
         <h3 className="ui header" id="selected-song-header">Selected Song</h3>
         <div className="ui card fluid" role="region" aria-labelledby="selected-song-header">
           <div className="content">
@@ -102,6 +116,16 @@ const SongDetail = () => {
             >
               <i className={`${isPlaying ? 'pause' : 'play'} icon`} aria-hidden="true"></i>
               {isPlaying ? 'Pause' : 'Play'} Song
+            </button>
+            <button
+              className="ui button fluid"
+              aria-label="Expand to full screen"
+              type="button"
+              onClick={() => setIsFullScreen(true)}
+              style={{ marginTop: '0.5em' }}
+            >
+              <i className="expand icon" aria-hidden="true"></i>
+              Full Screen
             </button>
             <button
               className="ui button fluid"
