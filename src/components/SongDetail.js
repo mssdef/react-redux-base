@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { nextSong, shuffleNext, setPlaybackSpeed } from '../actions';
 import FullScreenPlayer from './FullScreenPlayer';
+import Waveform from './Waveform';
 
 const SongDetail = () => {
   const song = useSelector(state => state.selectedSong);
@@ -136,6 +137,7 @@ const SongDetail = () => {
               <i className={`volume ${isMuted ? 'off' : 'up'} icon`} aria-hidden="true"></i>
               {isMuted ? 'Unmute' : 'Mute'}
             </button>
+            <Waveform audioRef={audioRef} isPlaying={isPlaying} />
             <input
               type="range"
               min="0"
