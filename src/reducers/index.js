@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
-import { SONGS_DATA } from '../data/songs';
+import songs from '../data/songs.json';
 import { SONG_SELECTED, REPEAT_MODE_CHANGED, SHUFFLE_TOGGLED, PLAYBACK_SPEED_CHANGED } from '../actions/types';
 
 const REPEAT_MODES = ['none', 'one', 'all'];
 
 const songsReducer = () => {
-  return SONGS_DATA;
+  return songs;
 };
 
 const selectedSongReducer = (selectedSong = null, action) => {
@@ -18,20 +18,20 @@ const selectedSongReducer = (selectedSong = null, action) => {
 
 const nextSongReducer = (currentSongIndex = 0, action) => {
   if (action.type === 'NEXT_SONG') {
-    return (currentSongIndex + 1) % SONGS_DATA.length;
+    return (currentSongIndex + 1) % songs.length;
   }
 
   if (action.type === 'NEXT_SONG_SHUFFLE') {
-    if (SONGS_DATA.length <= 1) return currentSongIndex;
+    if (songs.length <= 1) return currentSongIndex;
     let newIndex;
     do {
-      newIndex = Math.floor(Math.random() * SONGS_DATA.length);
+      newIndex = Math.floor(Math.random() * songs.length);
     } while (newIndex === currentSongIndex);
     return newIndex;
   }
 
   if (action.type === 'PREVIOUS_SONG') {
-    return (currentSongIndex - 1 + SONGS_DATA.length) % SONGS_DATA.length;
+    return (currentSongIndex - 1 + songs.length) % songs.length;
   }
 
   return currentSongIndex;
