@@ -99,12 +99,25 @@ const SongDetail = () => {
         <h3 className="ui header" id="selected-song-header">Selected Song</h3>
         <div className="ui card fluid" role="region" aria-labelledby="selected-song-header">
           <div className="content">
+            {song.artworkUrl && (
+              <img
+                className="ui image"
+                src={song.artworkUrl}
+                alt={`${song.title} artwork`}
+                style={{ width: '100%', marginBottom: '0.5em' }}
+              />
+            )}
             <div className="header" role="heading" aria-level="4">{song.title}</div>
             <div className="meta">
-              <span className="duration">{currentTime} / {song.duration}</span>
+              {song.artist && <span className="artist">{song.artist}</span>}
+              {song.artist && song.album && <span> &mdash; </span>}
+              {song.album && <span className="album">{song.album}</span>}
             </div>
-            <div className="description">
-              <p>Click the play button below to start listening to this track.</p>
+            <div className="meta">
+              {song.genre && <span className="genre">{song.genre}</span>}
+              {song.genre && song.year && <span> &middot; </span>}
+              {song.year && <span className="year">{song.year}</span>}
+              <span style={{ marginLeft: song.genre || song.year ? '0.5em' : 0 }} className="duration">{currentTime} / {song.duration}</span>
             </div>
           </div>
           <div className="extra content">

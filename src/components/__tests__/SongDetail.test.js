@@ -6,8 +6,54 @@ import SongDetail from '../SongDetail';
 
 const mockStore = configureStore([]);
 const song = { title: 'No Scrubs', duration: '4:05' };
+const fullSong = {
+  title: 'No Scrubs',
+  artist: 'TLC',
+  album: 'FanMail',
+  genre: 'R&B',
+  year: 1999,
+  duration: '4:05',
+  artworkUrl: 'https://example.com/artwork.jpg',
+};
 
 const baseState = { selectedSong: song, shuffle: false, repeatMode: 'none', playbackSpeed: 1 };
+
+describe('SongDetail song schema expansion', () => {
+  it('displays artist and album when provided', () => {
+    const store = mockStore({ ...baseState, selectedSong: fullSong });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    expect(screen.getByText('TLC')).toBeInTheDocument();
+    expect(screen.getByText('FanMail')).toBeInTheDocument();
+  });
+
+  it('displays genre and year when provided', () => {
+    const store = mockStore({ ...baseState, selectedSong: fullSong });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    expect(screen.getByText('R&B')).toBeInTheDocument();
+    expect(screen.getByText('1999')).toBeInTheDocument();
+  });
+
+  it('renders artwork image with alt text when artworkUrl is provided', () => {
+    const store = mockStore({ ...baseState, selectedSong: fullSong });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    const img = screen.getByAltText('No Scrubs artwork');
+    expect(img).toBeInTheDocument();
+    expect(img.src).toBe('https://example.com/artwork.jpg');
+  });
+
+  it('does not render artwork image when artworkUrl is empty', () => {
+    const store = mockStore({ ...baseState, selectedSong: { ...fullSong, artworkUrl: '' } });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    expect(screen.queryByAltText('No Scrubs artwork')).toBeNull();
+  });
+
+  it('renders title without artist/album when those fields are absent', () => {
+    const store = mockStore({ ...baseState });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    expect(screen.getByText('No Scrubs')).toBeInTheDocument();
+    expect(screen.queryByText('TLC')).toBeNull();
+  });
+});
 
 describe('SongDetail auto-advance', () => {
   it('dispatches NEXT_SONG when audio ends and shuffle is off', () => {

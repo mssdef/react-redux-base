@@ -1,6 +1,38 @@
 [
-  { "title": "No Scrubs", "duration": "4:05" },
-  { "title": "Macarena", "duration": "2:30" },
-  { "title": "All Star", "duration": "3:15" },
-  { "title": "I Want it That Way", "duration": "1:45" }
+  {
+    "title": "No Scrubs",
+    "artist": "TLC",
+    "album": "FanMail",
+    "genre": "R&B",
+    "year": 1999,
+    "duration": "4:05",
+    "artworkUrl": ""
+  },
+  {
+    "title": "Macarena",
+    "artist": "Los Del Rio",
+    "album": "Macarena Non Stop",
+    "genre": "Latin Pop",
+    "year": 1995,
+    "duration": "2:30",
+    "artworkUrl": ""
+  },
+  {
+    "title": "All Star",
+    "artist": "Smash Mouth",
+    "album": "Astro Lounge",
+    "genre": "Pop Rock",
+    "year": 1999,
+    "duration": "3:15",
+    "artworkUrl": ""
+  },
+  {
+    "title": "I Want it That Way",
+    "artist": "Backstreet Boys",
+    "album": "Millennium",
+    "genre": "Pop",
+    "year": 1999,
+    "duration": "1:45",
+    "artworkUrl": ""
+  }
 ]
