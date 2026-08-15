@@ -667,6 +667,52 @@ describe('SongList', () => {
     jest.useRealTimers();
   });
 
+  it('should highlight the matching search term within song titles', () => {
+    jest.useFakeTimers();
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Search songs by title, artist, album, or genre'), {
+      target: { value: 'star' },
+    });
+    act(() => jest.advanceTimersByTime(300));
+
+    const mark = screen.getByText('Star', { selector: 'mark' });
+    expect(mark).toBeTruthy();
+    expect(screen.getByText('All Star')).toBeTruthy();
+    jest.useRealTimers();
+  });
+
+  it('should highlight matches case-insensitively while preserving original title casing', () => {
+    jest.useFakeTimers();
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Search songs by title, artist, album, or genre'), {
+      target: { value: 'MACARENA' },
+    });
+    act(() => jest.advanceTimersByTime(300));
+
+    expect(screen.getByText('Macarena', { selector: 'mark' })).toBeTruthy();
+    jest.useRealTimers();
+  });
+
+  it('should not wrap any title text in mark elements when there is no search term', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    expect(document.querySelector('mark')).toBeNull();
+  });
+
   it('should not error filtering by year when a song has no year field', () => {
     render(
       <Provider store={store}>

@@ -5,6 +5,17 @@ import { selectSong, nextSong, previousSong, cycleRepeatMode, toggleShuffle, shu
 
 const SEARCH_DEBOUNCE_MS = 300;
 
+const escapeRegExp = string => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const highlightMatches = (text, keywords) => {
+  if (!keywords.length) return text;
+  const pattern = keywords.map(escapeRegExp).join('|');
+  const regex = new RegExp(`(${pattern})`, 'gi');
+  return text
+    .split(regex)
+    .map((part, i) => (i % 2 === 1 ? <mark key={i}>{part}</mark> : part));
+};
+
 const SongList = () => {
   const songs = useSelector(state => state.songs);
   const dispatch = useDispatch();
@@ -24,14 +35,15 @@ const SongList = () => {
     return () => clearTimeout(timeoutId);
   }, [searchTerm]);
 
+  const searchKeywords = debouncedSearchTerm.trim().toLowerCase().split(/\s+/).filter(Boolean);
+
   const matchesSearch = song => {
-    const keywords = debouncedSearchTerm.trim().toLowerCase().split(/\s+/).filter(Boolean);
-    if (keywords.length === 0) return true;
+    if (searchKeywords.length === 0) return true;
     const haystack = [song.title, song.artist, song.album, song.genre]
       .filter(Boolean)
       .join(' ')
       .toLowerCase();
-    return keywords.every(keyword => haystack.includes(keyword));
+    return searchKeywords.every(keyword => haystack.includes(keyword));
   };
 
   const visibleSongs = songs
@@ -86,7 +98,7 @@ const SongList = () => {
               </>
             )}
           </div>
-          <div className="content">{song.title}</div>
+          <div className="content">{highlightMatches(song.title, searchKeywords)}</div>
         </div>
       );
     });
