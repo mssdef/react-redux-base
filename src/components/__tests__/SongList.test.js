@@ -395,4 +395,76 @@ describe('SongList', () => {
     expect(screen.queryByText('No Scrubs')).toBeNull();
     expect(screen.queryByText('Macarena')).toBeNull();
   });
+
+  it('should filter the song list by genre as the user types', () => {
+    const genreStore = mockStore({
+      songs: [
+        { title: 'No Scrubs', genre: 'R&B', duration: '4:05' },
+        { title: 'Macarena', genre: 'Latin Pop', duration: '2:30' },
+        { title: 'All Star', genre: 'Rock', duration: '3:15' },
+        { title: 'I Want it That Way', genre: 'Pop', duration: '1:45' },
+      ],
+      currentSongIndex: 1,
+      repeatMode: 'none',
+      shuffle: false,
+    });
+
+    render(
+      <Provider store={genreStore}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Filter songs by genre'), {
+      target: { value: 'rock' },
+    });
+
+    expect(screen.getByText('All Star')).toBeTruthy();
+    expect(screen.queryByText('No Scrubs')).toBeNull();
+    expect(screen.queryByText('Macarena')).toBeNull();
+    expect(screen.queryByText('I Want it That Way')).toBeNull();
+  });
+
+  it('should combine title search and genre filter', () => {
+    const genreStore = mockStore({
+      songs: [
+        { title: 'No Scrubs', genre: 'R&B', duration: '4:05' },
+        { title: 'No Diggity', genre: 'Hip Hop', duration: '4:15' },
+      ],
+      currentSongIndex: 0,
+      repeatMode: 'none',
+      shuffle: false,
+    });
+
+    render(
+      <Provider store={genreStore}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Search songs by title'), {
+      target: { value: 'No' },
+    });
+    fireEvent.change(screen.getByLabelText('Filter songs by genre'), {
+      target: { value: 'R&B' },
+    });
+
+    expect(screen.getByText('No Scrubs')).toBeTruthy();
+    expect(screen.queryByText('No Diggity')).toBeNull();
+  });
+
+  it('should not error filtering by genre when a song has no genre field', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Filter songs by genre'), {
+      target: { value: 'Rock' },
+    });
+
+    expect(screen.queryByText('No Scrubs')).toBeNull();
+    expect(screen.queryByText('Macarena')).toBeNull();
+  });
 });

@@ -12,12 +12,14 @@ const SongList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [artistFilter, setArtistFilter] = useState('');
   const [albumFilter, setAlbumFilter] = useState('');
+  const [genreFilter, setGenreFilter] = useState('');
 
   const visibleSongs = songs
     .map((song, index) => ({ song, index }))
     .filter(({ song }) => song.title.toLowerCase().includes(searchTerm.toLowerCase()))
     .filter(({ song }) => (song.artist || '').toLowerCase().includes(artistFilter.toLowerCase()))
-    .filter(({ song }) => (song.album || '').toLowerCase().includes(albumFilter.toLowerCase()));
+    .filter(({ song }) => (song.album || '').toLowerCase().includes(albumFilter.toLowerCase()))
+    .filter(({ song }) => (song.genre || '').toLowerCase().includes(genreFilter.toLowerCase()));
 
   const renderList = () => {
     return visibleSongs.map(({ song, index }) => {
@@ -99,6 +101,16 @@ const SongList = () => {
           onChange={event => setAlbumFilter(event.target.value)}
         />
         <i className="compact disc icon" />
+      </div>
+      <div className="ui icon input fluid">
+        <input
+          type="text"
+          placeholder="Filter by genre..."
+          aria-label="Filter songs by genre"
+          value={genreFilter}
+          onChange={event => setGenreFilter(event.target.value)}
+        />
+        <i className="tags icon" />
       </div>
       <div className="ui divided list">{renderList()}</div>
     </div>
