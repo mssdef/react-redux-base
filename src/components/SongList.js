@@ -16,9 +16,19 @@ const SongList = () => {
   const [yearFromFilter, setYearFromFilter] = useState('');
   const [yearToFilter, setYearToFilter] = useState('');
 
+  const matchesSearch = song => {
+    const keywords = searchTerm.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    if (keywords.length === 0) return true;
+    const haystack = [song.title, song.artist, song.album, song.genre]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+    return keywords.every(keyword => haystack.includes(keyword));
+  };
+
   const visibleSongs = songs
     .map((song, index) => ({ song, index }))
-    .filter(({ song }) => song.title.toLowerCase().includes(searchTerm.toLowerCase()))
+    .filter(({ song }) => matchesSearch(song))
     .filter(({ song }) => (song.artist || '').toLowerCase().includes(artistFilter.toLowerCase()))
     .filter(({ song }) => (song.album || '').toLowerCase().includes(albumFilter.toLowerCase()))
     .filter(({ song }) => (song.genre || '').toLowerCase().includes(genreFilter.toLowerCase()))
@@ -79,8 +89,8 @@ const SongList = () => {
       <div className="ui icon input fluid">
         <input
           type="text"
-          placeholder="Search songs by title..."
-          aria-label="Search songs by title"
+          placeholder="Search by title, artist, album, or genre..."
+          aria-label="Search songs by title, artist, album, or genre"
           value={searchTerm}
           onChange={event => setSearchTerm(event.target.value)}
         />

@@ -207,7 +207,7 @@ describe('SongList', () => {
       </Provider>
     );
 
-    fireEvent.change(screen.getByLabelText('Search songs by title'), {
+    fireEvent.change(screen.getByLabelText('Search songs by title, artist, album, or genre'), {
       target: { value: 'star' },
     });
 
@@ -224,7 +224,7 @@ describe('SongList', () => {
       </Provider>
     );
 
-    const searchInput = screen.getByLabelText('Search songs by title');
+    const searchInput = screen.getByLabelText('Search songs by title, artist, album, or genre');
 
     fireEvent.change(searchInput, { target: { value: 'MACARENA' } });
     expect(screen.getByText('Macarena')).toBeTruthy();
@@ -237,6 +237,65 @@ describe('SongList', () => {
     expect(screen.getByText('I Want it That Way')).toBeTruthy();
   });
 
+  it('should match songs when the combined search keyword matches artist, album, or genre instead of title', () => {
+    const combinedStore = mockStore({
+      songs: [
+        { title: 'No Scrubs', artist: 'TLC', album: 'FanMail', genre: 'R&B' },
+        { title: 'Macarena', artist: 'Los Del Rio', album: 'A mi me gusta', genre: 'Latin Pop' },
+        { title: 'All Star', artist: 'Smash Mouth', album: 'Astro Lounge', genre: 'Rock' },
+      ],
+      currentSongIndex: 0,
+      repeatMode: 'none',
+      shuffle: false,
+    });
+
+    render(
+      <Provider store={combinedStore}>
+        <SongList />
+      </Provider>
+    );
+
+    const searchInput = screen.getByLabelText('Search songs by title, artist, album, or genre');
+
+    fireEvent.change(searchInput, { target: { value: 'tlc' } });
+    expect(screen.getByText('No Scrubs')).toBeTruthy();
+    expect(screen.queryByText('Macarena')).toBeNull();
+    expect(screen.queryByText('All Star')).toBeNull();
+
+    fireEvent.change(searchInput, { target: { value: 'astro' } });
+    expect(screen.getByText('All Star')).toBeTruthy();
+    expect(screen.queryByText('No Scrubs')).toBeNull();
+
+    fireEvent.change(searchInput, { target: { value: 'latin' } });
+    expect(screen.getByText('Macarena')).toBeTruthy();
+    expect(screen.queryByText('All Star')).toBeNull();
+  });
+
+  it('should require every space-separated keyword to match, even across different fields', () => {
+    const combinedStore = mockStore({
+      songs: [
+        { title: 'No Scrubs', artist: 'TLC', album: 'FanMail', genre: 'R&B' },
+        { title: 'No Diggity', artist: 'Blackstreet', album: 'Another Level', genre: 'R&B' },
+      ],
+      currentSongIndex: 0,
+      repeatMode: 'none',
+      shuffle: false,
+    });
+
+    render(
+      <Provider store={combinedStore}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Search songs by title, artist, album, or genre'), {
+      target: { value: 'no tlc' },
+    });
+
+    expect(screen.getByText('No Scrubs')).toBeTruthy();
+    expect(screen.queryByText('No Diggity')).toBeNull();
+  });
+
   it('should still show queue controls on the current song row when filtered', () => {
     render(
       <Provider store={store}>
@@ -244,7 +303,7 @@ describe('SongList', () => {
       </Provider>
     );
 
-    fireEvent.change(screen.getByLabelText('Search songs by title'), {
+    fireEvent.change(screen.getByLabelText('Search songs by title, artist, album, or genre'), {
       target: { value: 'Macarena' },
     });
 
@@ -298,7 +357,7 @@ describe('SongList', () => {
       </Provider>
     );
 
-    fireEvent.change(screen.getByLabelText('Search songs by title'), {
+    fireEvent.change(screen.getByLabelText('Search songs by title, artist, album, or genre'), {
       target: { value: 'No' },
     });
     fireEvent.change(screen.getByLabelText('Filter songs by artist'), {
@@ -370,7 +429,7 @@ describe('SongList', () => {
       </Provider>
     );
 
-    fireEvent.change(screen.getByLabelText('Search songs by title'), {
+    fireEvent.change(screen.getByLabelText('Search songs by title, artist, album, or genre'), {
       target: { value: 'No' },
     });
     fireEvent.change(screen.getByLabelText('Filter songs by album'), {
@@ -442,7 +501,7 @@ describe('SongList', () => {
       </Provider>
     );
 
-    fireEvent.change(screen.getByLabelText('Search songs by title'), {
+    fireEvent.change(screen.getByLabelText('Search songs by title, artist, album, or genre'), {
       target: { value: 'No' },
     });
     fireEvent.change(screen.getByLabelText('Filter songs by genre'), {
@@ -544,7 +603,7 @@ describe('SongList', () => {
       </Provider>
     );
 
-    fireEvent.change(screen.getByLabelText('Search songs by title'), {
+    fireEvent.change(screen.getByLabelText('Search songs by title, artist, album, or genre'), {
       target: { value: 'No' },
     });
     fireEvent.change(screen.getByLabelText('Filter songs by year from'), {
