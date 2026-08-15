@@ -11,11 +11,13 @@ const SongList = () => {
   const shuffle = useSelector(state => state.shuffle);
   const [searchTerm, setSearchTerm] = useState('');
   const [artistFilter, setArtistFilter] = useState('');
+  const [albumFilter, setAlbumFilter] = useState('');
 
   const visibleSongs = songs
     .map((song, index) => ({ song, index }))
     .filter(({ song }) => song.title.toLowerCase().includes(searchTerm.toLowerCase()))
-    .filter(({ song }) => (song.artist || '').toLowerCase().includes(artistFilter.toLowerCase()));
+    .filter(({ song }) => (song.artist || '').toLowerCase().includes(artistFilter.toLowerCase()))
+    .filter(({ song }) => (song.album || '').toLowerCase().includes(albumFilter.toLowerCase()));
 
   const renderList = () => {
     return visibleSongs.map(({ song, index }) => {
@@ -87,6 +89,16 @@ const SongList = () => {
           onChange={event => setArtistFilter(event.target.value)}
         />
         <i className="user icon" />
+      </div>
+      <div className="ui icon input fluid">
+        <input
+          type="text"
+          placeholder="Filter by album..."
+          aria-label="Filter songs by album"
+          value={albumFilter}
+          onChange={event => setAlbumFilter(event.target.value)}
+        />
+        <i className="compact disc icon" />
       </div>
       <div className="ui divided list">{renderList()}</div>
     </div>

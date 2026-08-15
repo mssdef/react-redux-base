@@ -323,4 +323,76 @@ describe('SongList', () => {
     expect(screen.queryByText('No Scrubs')).toBeNull();
     expect(screen.queryByText('Macarena')).toBeNull();
   });
+
+  it('should filter the song list by album as the user types', () => {
+    const albumStore = mockStore({
+      songs: [
+        { title: 'No Scrubs', album: 'FanMail', duration: '4:05' },
+        { title: 'Macarena', album: 'A mi me gusta', duration: '2:30' },
+        { title: 'All Star', album: 'Astro Lounge', duration: '3:15' },
+        { title: 'I Want it That Way', album: 'Millennium', duration: '1:45' },
+      ],
+      currentSongIndex: 1,
+      repeatMode: 'none',
+      shuffle: false,
+    });
+
+    render(
+      <Provider store={albumStore}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Filter songs by album'), {
+      target: { value: 'astro' },
+    });
+
+    expect(screen.getByText('All Star')).toBeTruthy();
+    expect(screen.queryByText('No Scrubs')).toBeNull();
+    expect(screen.queryByText('Macarena')).toBeNull();
+    expect(screen.queryByText('I Want it That Way')).toBeNull();
+  });
+
+  it('should combine title search and album filter', () => {
+    const albumStore = mockStore({
+      songs: [
+        { title: 'No Scrubs', album: 'FanMail', duration: '4:05' },
+        { title: 'No Diggity', album: 'Another Level', duration: '4:15' },
+      ],
+      currentSongIndex: 0,
+      repeatMode: 'none',
+      shuffle: false,
+    });
+
+    render(
+      <Provider store={albumStore}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Search songs by title'), {
+      target: { value: 'No' },
+    });
+    fireEvent.change(screen.getByLabelText('Filter songs by album'), {
+      target: { value: 'FanMail' },
+    });
+
+    expect(screen.getByText('No Scrubs')).toBeTruthy();
+    expect(screen.queryByText('No Diggity')).toBeNull();
+  });
+
+  it('should not error filtering by album when a song has no album field', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Filter songs by album'), {
+      target: { value: 'FanMail' },
+    });
+
+    expect(screen.queryByText('No Scrubs')).toBeNull();
+    expect(screen.queryByText('Macarena')).toBeNull();
+  });
 });
