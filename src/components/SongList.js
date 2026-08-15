@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { selectSong, nextSong, previousSong, cycleRepeatMode, toggleShuffle, shuffleNext } from '../actions';
+
+const SEARCH_DEBOUNCE_MS = 300;
 
 const SongList = () => {
   const songs = useSelector(state => state.songs);
@@ -10,14 +12,20 @@ const SongList = () => {
   const repeatMode = useSelector(state => state.repeatMode);
   const shuffle = useSelector(state => state.shuffle);
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [artistFilter, setArtistFilter] = useState('');
   const [albumFilter, setAlbumFilter] = useState('');
   const [genreFilter, setGenreFilter] = useState('');
   const [yearFromFilter, setYearFromFilter] = useState('');
   const [yearToFilter, setYearToFilter] = useState('');
 
+  useEffect(() => {
+    const timeoutId = setTimeout(() => setDebouncedSearchTerm(searchTerm), SEARCH_DEBOUNCE_MS);
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm]);
+
   const matchesSearch = song => {
-    const keywords = searchTerm.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    const keywords = debouncedSearchTerm.trim().toLowerCase().split(/\s+/).filter(Boolean);
     if (keywords.length === 0) return true;
     const haystack = [song.title, song.artist, song.album, song.genre]
       .filter(Boolean)

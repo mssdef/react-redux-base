@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import SongList from '../SongList';
@@ -201,6 +201,27 @@ describe('SongList', () => {
   });
 
   it('should filter the song list by title as the user types', () => {
+    jest.useFakeTimers();
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Search songs by title, artist, album, or genre'), {
+      target: { value: 'star' },
+    });
+    act(() => jest.advanceTimersByTime(300));
+
+    expect(screen.getByText('All Star')).toBeTruthy();
+    expect(screen.queryByText('No Scrubs')).toBeNull();
+    expect(screen.queryByText('Macarena')).toBeNull();
+    expect(screen.queryByText('I Want it That Way')).toBeNull();
+    jest.useRealTimers();
+  });
+
+  it('should not filter the song list until the debounce delay elapses', () => {
+    jest.useFakeTimers();
     render(
       <Provider store={store}>
         <SongList />
@@ -211,13 +232,19 @@ describe('SongList', () => {
       target: { value: 'star' },
     });
 
+    act(() => jest.advanceTimersByTime(100));
+    expect(screen.getByText('No Scrubs')).toBeTruthy();
+    expect(screen.getByText('Macarena')).toBeTruthy();
+    expect(screen.getByText('I Want it That Way')).toBeTruthy();
+
+    act(() => jest.advanceTimersByTime(200));
     expect(screen.getByText('All Star')).toBeTruthy();
     expect(screen.queryByText('No Scrubs')).toBeNull();
-    expect(screen.queryByText('Macarena')).toBeNull();
-    expect(screen.queryByText('I Want it That Way')).toBeNull();
+    jest.useRealTimers();
   });
 
   it('should filter case-insensitively and show all songs when search is cleared', () => {
+    jest.useFakeTimers();
     render(
       <Provider store={store}>
         <SongList />
@@ -227,14 +254,17 @@ describe('SongList', () => {
     const searchInput = screen.getByLabelText('Search songs by title, artist, album, or genre');
 
     fireEvent.change(searchInput, { target: { value: 'MACARENA' } });
+    act(() => jest.advanceTimersByTime(300));
     expect(screen.getByText('Macarena')).toBeTruthy();
     expect(screen.queryByText('All Star')).toBeNull();
 
     fireEvent.change(searchInput, { target: { value: '' } });
+    act(() => jest.advanceTimersByTime(300));
     expect(screen.getByText('No Scrubs')).toBeTruthy();
     expect(screen.getByText('Macarena')).toBeTruthy();
     expect(screen.getByText('All Star')).toBeTruthy();
     expect(screen.getByText('I Want it That Way')).toBeTruthy();
+    jest.useRealTimers();
   });
 
   it('should match songs when the combined search keyword matches artist, album, or genre instead of title', () => {
@@ -256,19 +286,24 @@ describe('SongList', () => {
     );
 
     const searchInput = screen.getByLabelText('Search songs by title, artist, album, or genre');
+    jest.useFakeTimers();
 
     fireEvent.change(searchInput, { target: { value: 'tlc' } });
+    act(() => jest.advanceTimersByTime(300));
     expect(screen.getByText('No Scrubs')).toBeTruthy();
     expect(screen.queryByText('Macarena')).toBeNull();
     expect(screen.queryByText('All Star')).toBeNull();
 
     fireEvent.change(searchInput, { target: { value: 'astro' } });
+    act(() => jest.advanceTimersByTime(300));
     expect(screen.getByText('All Star')).toBeTruthy();
     expect(screen.queryByText('No Scrubs')).toBeNull();
 
     fireEvent.change(searchInput, { target: { value: 'latin' } });
+    act(() => jest.advanceTimersByTime(300));
     expect(screen.getByText('Macarena')).toBeTruthy();
     expect(screen.queryByText('All Star')).toBeNull();
+    jest.useRealTimers();
   });
 
   it('should require every space-separated keyword to match, even across different fields', () => {
@@ -288,12 +323,15 @@ describe('SongList', () => {
       </Provider>
     );
 
+    jest.useFakeTimers();
     fireEvent.change(screen.getByLabelText('Search songs by title, artist, album, or genre'), {
       target: { value: 'no tlc' },
     });
+    act(() => jest.advanceTimersByTime(300));
 
     expect(screen.getByText('No Scrubs')).toBeTruthy();
     expect(screen.queryByText('No Diggity')).toBeNull();
+    jest.useRealTimers();
   });
 
   it('should still show queue controls on the current song row when filtered', () => {
@@ -303,12 +341,15 @@ describe('SongList', () => {
       </Provider>
     );
 
+    jest.useFakeTimers();
     fireEvent.change(screen.getByLabelText('Search songs by title, artist, album, or genre'), {
       target: { value: 'Macarena' },
     });
+    act(() => jest.advanceTimersByTime(300));
 
     expect(screen.getByRole('button', { name: 'Next' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Previous' })).toBeInTheDocument();
+    jest.useRealTimers();
   });
 
   it('should filter the song list by artist as the user types', () => {
@@ -357,15 +398,18 @@ describe('SongList', () => {
       </Provider>
     );
 
+    jest.useFakeTimers();
     fireEvent.change(screen.getByLabelText('Search songs by title, artist, album, or genre'), {
       target: { value: 'No' },
     });
+    act(() => jest.advanceTimersByTime(300));
     fireEvent.change(screen.getByLabelText('Filter songs by artist'), {
       target: { value: 'TLC' },
     });
 
     expect(screen.getByText('No Scrubs')).toBeTruthy();
     expect(screen.queryByText('No Diggity')).toBeNull();
+    jest.useRealTimers();
   });
 
   it('should not error filtering by artist when a song has no artist field', () => {
@@ -429,15 +473,18 @@ describe('SongList', () => {
       </Provider>
     );
 
+    jest.useFakeTimers();
     fireEvent.change(screen.getByLabelText('Search songs by title, artist, album, or genre'), {
       target: { value: 'No' },
     });
+    act(() => jest.advanceTimersByTime(300));
     fireEvent.change(screen.getByLabelText('Filter songs by album'), {
       target: { value: 'FanMail' },
     });
 
     expect(screen.getByText('No Scrubs')).toBeTruthy();
     expect(screen.queryByText('No Diggity')).toBeNull();
+    jest.useRealTimers();
   });
 
   it('should not error filtering by album when a song has no album field', () => {
@@ -501,15 +548,18 @@ describe('SongList', () => {
       </Provider>
     );
 
+    jest.useFakeTimers();
     fireEvent.change(screen.getByLabelText('Search songs by title, artist, album, or genre'), {
       target: { value: 'No' },
     });
+    act(() => jest.advanceTimersByTime(300));
     fireEvent.change(screen.getByLabelText('Filter songs by genre'), {
       target: { value: 'R&B' },
     });
 
     expect(screen.getByText('No Scrubs')).toBeTruthy();
     expect(screen.queryByText('No Diggity')).toBeNull();
+    jest.useRealTimers();
   });
 
   it('should not error filtering by genre when a song has no genre field', () => {
@@ -603,15 +653,18 @@ describe('SongList', () => {
       </Provider>
     );
 
+    jest.useFakeTimers();
     fireEvent.change(screen.getByLabelText('Search songs by title, artist, album, or genre'), {
       target: { value: 'No' },
     });
+    act(() => jest.advanceTimersByTime(300));
     fireEvent.change(screen.getByLabelText('Filter songs by year from'), {
       target: { value: '1998' },
     });
 
     expect(screen.getByText('No Scrubs')).toBeTruthy();
     expect(screen.queryByText('No Diggity')).toBeNull();
+    jest.useRealTimers();
   });
 
   it('should not error filtering by year when a song has no year field', () => {
