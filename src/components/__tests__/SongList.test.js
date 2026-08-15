@@ -199,4 +199,56 @@ describe('SongList', () => {
     const actions = store.getActions();
     expect(actions).toContainEqual({ type: 'NEXT_SONG' });
   });
+
+  it('should filter the song list by title as the user types', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Search songs by title'), {
+      target: { value: 'star' },
+    });
+
+    expect(screen.getByText('All Star')).toBeTruthy();
+    expect(screen.queryByText('No Scrubs')).toBeNull();
+    expect(screen.queryByText('Macarena')).toBeNull();
+    expect(screen.queryByText('I Want it That Way')).toBeNull();
+  });
+
+  it('should filter case-insensitively and show all songs when search is cleared', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    const searchInput = screen.getByLabelText('Search songs by title');
+
+    fireEvent.change(searchInput, { target: { value: 'MACARENA' } });
+    expect(screen.getByText('Macarena')).toBeTruthy();
+    expect(screen.queryByText('All Star')).toBeNull();
+
+    fireEvent.change(searchInput, { target: { value: '' } });
+    expect(screen.getByText('No Scrubs')).toBeTruthy();
+    expect(screen.getByText('Macarena')).toBeTruthy();
+    expect(screen.getByText('All Star')).toBeTruthy();
+    expect(screen.getByText('I Want it That Way')).toBeTruthy();
+  });
+
+  it('should still show queue controls on the current song row when filtered', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Search songs by title'), {
+      target: { value: 'Macarena' },
+    });
+
+    expect(screen.getByRole('button', { name: 'Next' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Previous' })).toBeInTheDocument();
+  });
 });

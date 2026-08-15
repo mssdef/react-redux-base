@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { selectSong, nextSong, previousSong, cycleRepeatMode, toggleShuffle, shuffleNext } from '../actions';
@@ -9,9 +9,14 @@ const SongList = () => {
   const currentSongIndex = useSelector(state => state.currentSongIndex);
   const repeatMode = useSelector(state => state.repeatMode);
   const shuffle = useSelector(state => state.shuffle);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const visibleSongs = songs
+    .map((song, index) => ({ song, index }))
+    .filter(({ song }) => song.title.toLowerCase().includes(searchTerm.toLowerCase()));
 
   const renderList = () => {
-    return songs.map((song, index) => {
+    return visibleSongs.map(({ song, index }) => {
       return (
         <div className="item" key={song.title}>
           <div className="right floated content">
@@ -59,7 +64,21 @@ const SongList = () => {
     });
   };
 
-  return <div className="ui divided list">{renderList()}</div>;
+  return (
+    <div>
+      <div className="ui icon input fluid">
+        <input
+          type="text"
+          placeholder="Search songs by title..."
+          aria-label="Search songs by title"
+          value={searchTerm}
+          onChange={event => setSearchTerm(event.target.value)}
+        />
+        <i className="search icon" />
+      </div>
+      <div className="ui divided list">{renderList()}</div>
+    </div>
+  );
 };
 
 export default SongList;
