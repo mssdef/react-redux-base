@@ -6,7 +6,8 @@
     "genre": "R&B",
     "year": 1999,
     "duration": "4:05",
-    "artworkUrl": ""
+    "artworkUrl": "",
+    "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
   },
   {
     "title": "Macarena",
@@ -15,7 +16,8 @@
     "genre": "Latin Pop",
     "year": 1995,
     "duration": "2:30",
-    "artworkUrl": ""
+    "artworkUrl": "",
+    "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
   },
   {
     "title": "All Star",
@@ -24,7 +26,8 @@
     "genre": "Pop Rock",
     "year": 1999,
     "duration": "3:15",
-    "artworkUrl": ""
+    "artworkUrl": "",
+    "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
   },
   {
     "title": "I Want it That Way",
@@ -33,6 +36,7 @@
     "genre": "Pop",
     "year": 1999,
     "duration": "1:45",
-    "artworkUrl": ""
+    "artworkUrl": "",
+    "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"
   }
 ]

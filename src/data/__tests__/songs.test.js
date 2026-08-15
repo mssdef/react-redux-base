@@ -18,6 +18,13 @@ describe('songs.json', () => {
     });
   });
 
+  it('each song has an audioUrl', () => {
+    songs.forEach(song => {
+      expect(typeof song.audioUrl).toBe('string');
+      expect(song.audioUrl.length).toBeGreaterThan(0);
+    });
+  });
+
   it('contains the expected songs', () => {
     const titles = songs.map(s => s.title);
     expect(titles).toContain('No Scrubs');
