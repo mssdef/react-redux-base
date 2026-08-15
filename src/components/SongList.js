@@ -10,10 +10,12 @@ const SongList = () => {
   const repeatMode = useSelector(state => state.repeatMode);
   const shuffle = useSelector(state => state.shuffle);
   const [searchTerm, setSearchTerm] = useState('');
+  const [artistFilter, setArtistFilter] = useState('');
 
   const visibleSongs = songs
     .map((song, index) => ({ song, index }))
-    .filter(({ song }) => song.title.toLowerCase().includes(searchTerm.toLowerCase()));
+    .filter(({ song }) => song.title.toLowerCase().includes(searchTerm.toLowerCase()))
+    .filter(({ song }) => (song.artist || '').toLowerCase().includes(artistFilter.toLowerCase()));
 
   const renderList = () => {
     return visibleSongs.map(({ song, index }) => {
@@ -75,6 +77,16 @@ const SongList = () => {
           onChange={event => setSearchTerm(event.target.value)}
         />
         <i className="search icon" />
+      </div>
+      <div className="ui icon input fluid">
+        <input
+          type="text"
+          placeholder="Filter by artist..."
+          aria-label="Filter songs by artist"
+          value={artistFilter}
+          onChange={event => setArtistFilter(event.target.value)}
+        />
+        <i className="user icon" />
       </div>
       <div className="ui divided list">{renderList()}</div>
     </div>

@@ -251,4 +251,76 @@ describe('SongList', () => {
     expect(screen.getByRole('button', { name: 'Next' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Previous' })).toBeInTheDocument();
   });
+
+  it('should filter the song list by artist as the user types', () => {
+    const artistStore = mockStore({
+      songs: [
+        { title: 'No Scrubs', artist: 'TLC', duration: '4:05' },
+        { title: 'Macarena', artist: 'Los Del Rio', duration: '2:30' },
+        { title: 'All Star', artist: 'Smash Mouth', duration: '3:15' },
+        { title: 'I Want it That Way', artist: 'Backstreet Boys', duration: '1:45' },
+      ],
+      currentSongIndex: 1,
+      repeatMode: 'none',
+      shuffle: false,
+    });
+
+    render(
+      <Provider store={artistStore}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Filter songs by artist'), {
+      target: { value: 'smash' },
+    });
+
+    expect(screen.getByText('All Star')).toBeTruthy();
+    expect(screen.queryByText('No Scrubs')).toBeNull();
+    expect(screen.queryByText('Macarena')).toBeNull();
+    expect(screen.queryByText('I Want it That Way')).toBeNull();
+  });
+
+  it('should combine title search and artist filter', () => {
+    const artistStore = mockStore({
+      songs: [
+        { title: 'No Scrubs', artist: 'TLC', duration: '4:05' },
+        { title: 'No Diggity', artist: 'Blackstreet', duration: '4:15' },
+      ],
+      currentSongIndex: 0,
+      repeatMode: 'none',
+      shuffle: false,
+    });
+
+    render(
+      <Provider store={artistStore}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Search songs by title'), {
+      target: { value: 'No' },
+    });
+    fireEvent.change(screen.getByLabelText('Filter songs by artist'), {
+      target: { value: 'TLC' },
+    });
+
+    expect(screen.getByText('No Scrubs')).toBeTruthy();
+    expect(screen.queryByText('No Diggity')).toBeNull();
+  });
+
+  it('should not error filtering by artist when a song has no artist field', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Filter songs by artist'), {
+      target: { value: 'TLC' },
+    });
+
+    expect(screen.queryByText('No Scrubs')).toBeNull();
+    expect(screen.queryByText('Macarena')).toBeNull();
+  });
 });
