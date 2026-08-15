@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { nextSong, shuffleNext, setPlaybackSpeed } from '../actions';
+import { nextSong, shuffleNext, setPlaybackSpeed, setVolume } from '../actions';
 import FullScreenPlayer from './FullScreenPlayer';
 import Waveform from './Waveform';
 
@@ -10,6 +10,7 @@ const SongDetail = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const playbackSpeed = useSelector(state => state.playbackSpeed);
+  const volume = useSelector(state => state.volume);
   const shuffle = useSelector(state => state.shuffle);
   const repeatMode = useSelector(state => state.repeatMode);
   const dispatch = useDispatch();
@@ -51,6 +52,16 @@ const SongDetail = () => {
   useEffect(() => {
     if (audioRef.current && playbackSpeed) audioRef.current.playbackRate = playbackSpeed;
   }, [playbackSpeed]);
+
+  const handleVolumeChange = useCallback((e) => {
+    const nextVolume = parseFloat(e.target.value);
+    if (audioRef.current) audioRef.current.volume = nextVolume;
+    dispatch(setVolume(nextVolume));
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.volume = volume;
+  }, [volume]);
 
   const seek = useCallback((delta) => {
     const audio = audioRef.current;
@@ -160,6 +171,20 @@ const SongDetail = () => {
               className="ui range input fluid"
               aria-label={`Seek bar for ${song.title}`}
             />
+            <div className="ui labeled input" style={{ marginTop: '0.5em' }}>
+              <label className="ui label" htmlFor="volume">Volume</label>
+              <input
+                id="volume"
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={volume}
+                onChange={handleVolumeChange}
+                className="ui range input fluid"
+                aria-label="Volume"
+              />
+            </div>
             <div className="ui labeled input" style={{ marginTop: '0.5em' }}>
               <label className="ui label" htmlFor="playback-speed">Speed</label>
               <select

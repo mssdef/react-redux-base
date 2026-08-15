@@ -16,7 +16,7 @@ const fullSong = {
   artworkUrl: 'https://example.com/artwork.jpg',
 };
 
-const baseState = { selectedSong: song, shuffle: false, repeatMode: 'none', playbackSpeed: 1 };
+const baseState = { selectedSong: song, shuffle: false, repeatMode: 'none', playbackSpeed: 1, volume: 1 };
 
 describe('SongDetail song schema expansion', () => {
   it('displays artist and album when provided', () => {
@@ -228,5 +228,39 @@ describe('SongDetail playback speed', () => {
     const store = mockStore({ ...baseState, selectedSong: null });
     render(<Provider store={store}><SongDetail /></Provider>);
     expect(screen.queryByLabelText('Playback speed')).toBeNull();
+  });
+});
+
+describe('SongDetail volume control', () => {
+  it('renders volume slider with default value of 1', () => {
+    const store = mockStore({ ...baseState });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    expect(screen.getByLabelText('Volume').value).toBe('1');
+  });
+
+  it('dispatches VOLUME_CHANGED with correct payload when volume changes', () => {
+    const store = mockStore({ ...baseState });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    fireEvent.change(screen.getByLabelText('Volume'), { target: { value: '0.4' } });
+    expect(store.getActions()).toContainEqual({ type: 'VOLUME_CHANGED', payload: 0.4 });
+  });
+
+  it('applies volume changes to the audio element', () => {
+    const store = mockStore({ ...baseState });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    fireEvent.change(screen.getByLabelText('Volume'), { target: { value: '0.4' } });
+    expect(document.querySelector('audio').volume).toBe(0.4);
+  });
+
+  it('reflects stored volume from redux state', () => {
+    const store = mockStore({ ...baseState, volume: 0.2 });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    expect(screen.getByLabelText('Volume').value).toBe('0.2');
+  });
+
+  it('does not render volume slider when no song is selected', () => {
+    const store = mockStore({ ...baseState, selectedSong: null });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    expect(screen.queryByLabelText('Volume')).toBeNull();
   });
 });
