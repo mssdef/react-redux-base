@@ -467,4 +467,106 @@ describe('SongList', () => {
     expect(screen.queryByText('No Scrubs')).toBeNull();
     expect(screen.queryByText('Macarena')).toBeNull();
   });
+
+  it('should filter the song list by year range', () => {
+    const yearStore = mockStore({
+      songs: [
+        { title: 'No Scrubs', year: 1999, duration: '4:05' },
+        { title: 'Macarena', year: 1995, duration: '2:30' },
+        { title: 'All Star', year: 1999, duration: '3:15' },
+        { title: 'I Want it That Way', year: 1999, duration: '1:45' },
+      ],
+      currentSongIndex: 1,
+      repeatMode: 'none',
+      shuffle: false,
+    });
+
+    render(
+      <Provider store={yearStore}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Filter songs by year from'), {
+      target: { value: '1996' },
+    });
+
+    expect(screen.getByText('No Scrubs')).toBeTruthy();
+    expect(screen.getByText('All Star')).toBeTruthy();
+    expect(screen.getByText('I Want it That Way')).toBeTruthy();
+    expect(screen.queryByText('Macarena')).toBeNull();
+  });
+
+  it('should filter the song list using both year from and year to bounds', () => {
+    const yearStore = mockStore({
+      songs: [
+        { title: 'No Scrubs', year: 1999, duration: '4:05' },
+        { title: 'Macarena', year: 1995, duration: '2:30' },
+        { title: 'All Star', year: 2001, duration: '3:15' },
+      ],
+      currentSongIndex: 0,
+      repeatMode: 'none',
+      shuffle: false,
+    });
+
+    render(
+      <Provider store={yearStore}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Filter songs by year from'), {
+      target: { value: '1996' },
+    });
+    fireEvent.change(screen.getByLabelText('Filter songs by year to'), {
+      target: { value: '2000' },
+    });
+
+    expect(screen.getByText('No Scrubs')).toBeTruthy();
+    expect(screen.queryByText('Macarena')).toBeNull();
+    expect(screen.queryByText('All Star')).toBeNull();
+  });
+
+  it('should combine title search and year range filter', () => {
+    const yearStore = mockStore({
+      songs: [
+        { title: 'No Scrubs', year: 1999, duration: '4:05' },
+        { title: 'No Diggity', year: 1996, duration: '4:15' },
+      ],
+      currentSongIndex: 0,
+      repeatMode: 'none',
+      shuffle: false,
+    });
+
+    render(
+      <Provider store={yearStore}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Search songs by title'), {
+      target: { value: 'No' },
+    });
+    fireEvent.change(screen.getByLabelText('Filter songs by year from'), {
+      target: { value: '1998' },
+    });
+
+    expect(screen.getByText('No Scrubs')).toBeTruthy();
+    expect(screen.queryByText('No Diggity')).toBeNull();
+  });
+
+  it('should not error filtering by year when a song has no year field', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Filter songs by year from'), {
+      target: { value: '2000' },
+    });
+
+    expect(screen.queryByText('No Scrubs')).toBeNull();
+    expect(screen.queryByText('Macarena')).toBeNull();
+  });
 });

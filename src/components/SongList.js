@@ -13,13 +13,17 @@ const SongList = () => {
   const [artistFilter, setArtistFilter] = useState('');
   const [albumFilter, setAlbumFilter] = useState('');
   const [genreFilter, setGenreFilter] = useState('');
+  const [yearFromFilter, setYearFromFilter] = useState('');
+  const [yearToFilter, setYearToFilter] = useState('');
 
   const visibleSongs = songs
     .map((song, index) => ({ song, index }))
     .filter(({ song }) => song.title.toLowerCase().includes(searchTerm.toLowerCase()))
     .filter(({ song }) => (song.artist || '').toLowerCase().includes(artistFilter.toLowerCase()))
     .filter(({ song }) => (song.album || '').toLowerCase().includes(albumFilter.toLowerCase()))
-    .filter(({ song }) => (song.genre || '').toLowerCase().includes(genreFilter.toLowerCase()));
+    .filter(({ song }) => (song.genre || '').toLowerCase().includes(genreFilter.toLowerCase()))
+    .filter(({ song }) => yearFromFilter === '' || (song.year || 0) >= Number(yearFromFilter))
+    .filter(({ song }) => yearToFilter === '' || (song.year || 0) <= Number(yearToFilter));
 
   const renderList = () => {
     return visibleSongs.map(({ song, index }) => {
@@ -111,6 +115,26 @@ const SongList = () => {
           onChange={event => setGenreFilter(event.target.value)}
         />
         <i className="tags icon" />
+      </div>
+      <div className="ui icon input fluid">
+        <input
+          type="number"
+          placeholder="Year from..."
+          aria-label="Filter songs by year from"
+          value={yearFromFilter}
+          onChange={event => setYearFromFilter(event.target.value)}
+        />
+        <i className="calendar icon" />
+      </div>
+      <div className="ui icon input fluid">
+        <input
+          type="number"
+          placeholder="Year to..."
+          aria-label="Filter songs by year to"
+          value={yearToFilter}
+          onChange={event => setYearToFilter(event.target.value)}
+        />
+        <i className="calendar icon" />
       </div>
       <div className="ui divided list">{renderList()}</div>
     </div>
