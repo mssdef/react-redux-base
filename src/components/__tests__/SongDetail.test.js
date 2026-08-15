@@ -16,7 +16,7 @@ const fullSong = {
   artworkUrl: 'https://example.com/artwork.jpg',
 };
 
-const baseState = { selectedSong: song, shuffle: false, repeatMode: 'none', playbackSpeed: 1, volume: 1 };
+const baseState = { selectedSong: song, shuffle: false, repeatMode: 'none', playbackSpeed: 1, volume: 1, autoPlay: false };
 
 describe('SongDetail song schema expansion', () => {
   it('displays artist and album when provided', () => {
@@ -268,5 +268,48 @@ describe('SongDetail volume control', () => {
     const store = mockStore({ ...baseState, selectedSong: null });
     render(<Provider store={store}><SongDetail /></Provider>);
     expect(screen.queryByLabelText('Volume')).toBeNull();
+  });
+});
+
+describe('SongDetail auto-play preference', () => {
+  beforeAll(() => {
+    window.HTMLMediaElement.prototype.play = jest.fn().mockResolvedValue(undefined);
+    window.HTMLMediaElement.prototype.pause = jest.fn();
+  });
+
+  beforeEach(() => {
+    window.HTMLMediaElement.prototype.play.mockClear();
+    window.HTMLMediaElement.prototype.pause.mockClear();
+  });
+
+  it('renders Auto-play: off by default', () => {
+    const store = mockStore({ ...baseState });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    expect(screen.getByRole('button', { name: 'Auto-play: off' })).toBeInTheDocument();
+  });
+
+  it('dispatches AUTOPLAY_TOGGLED when the auto-play button is clicked', () => {
+    const store = mockStore({ ...baseState });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    fireEvent.click(screen.getByRole('button', { name: 'Auto-play: off' }));
+    expect(store.getActions()).toContainEqual({ type: 'AUTOPLAY_TOGGLED' });
+  });
+
+  it('does not auto-play a newly selected song when the preference is disabled', () => {
+    const store = mockStore({ ...baseState, autoPlay: false });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    expect(window.HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
+  });
+
+  it('auto-plays a newly selected song when the preference is enabled', () => {
+    const store = mockStore({ ...baseState, autoPlay: true });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    expect(window.HTMLMediaElement.prototype.play).toHaveBeenCalled();
+  });
+
+  it('renders Auto-play: on when the preference is enabled', () => {
+    const store = mockStore({ ...baseState, autoPlay: true });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    expect(screen.getByRole('button', { name: 'Auto-play: on' })).toBeInTheDocument();
   });
 });

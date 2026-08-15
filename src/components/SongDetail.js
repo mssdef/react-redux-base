@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { nextSong, shuffleNext, setPlaybackSpeed, setVolume } from '../actions';
+import { nextSong, shuffleNext, setPlaybackSpeed, setVolume, toggleAutoPlay } from '../actions';
 import FullScreenPlayer from './FullScreenPlayer';
 import Waveform from './Waveform';
 
@@ -11,6 +11,7 @@ const SongDetail = () => {
   const [isMuted, setIsMuted] = useState(false);
   const playbackSpeed = useSelector(state => state.playbackSpeed);
   const volume = useSelector(state => state.volume);
+  const autoPlay = useSelector(state => state.autoPlay);
   const shuffle = useSelector(state => state.shuffle);
   const repeatMode = useSelector(state => state.repeatMode);
   const dispatch = useDispatch();
@@ -62,6 +63,15 @@ const SongDetail = () => {
   useEffect(() => {
     if (audioRef.current) audioRef.current.volume = volume;
   }, [volume]);
+
+  useEffect(() => {
+    if (!song || !autoPlay) return;
+    const audio = audioRef.current;
+    if (!audio) return;
+    const playPromise = audio.play();
+    if (playPromise !== undefined) playPromise.catch(() => {});
+    setIsPlaying(true);
+  }, [song, autoPlay]);
 
   const seek = useCallback((delta) => {
     const audio = audioRef.current;
@@ -160,6 +170,16 @@ const SongDetail = () => {
             >
               <i className={`volume ${isMuted ? 'off' : 'up'} icon`} aria-hidden="true"></i>
               {isMuted ? 'Unmute' : 'Mute'}
+            </button>
+            <button
+              className={`ui button fluid${autoPlay ? ' active' : ''}`}
+              aria-label={`Auto-play: ${autoPlay ? 'on' : 'off'}`}
+              aria-pressed={autoPlay}
+              type="button"
+              onClick={() => dispatch(toggleAutoPlay())}
+            >
+              <i className="magic icon" aria-hidden="true"></i>
+              Auto-play: {autoPlay ? 'on' : 'off'}
             </button>
             <Waveform audioRef={audioRef} isPlaying={isPlaying} />
             <input

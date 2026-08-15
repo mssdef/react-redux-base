@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import songs from '../data/songs.json';
-import { SONG_SELECTED, VOLUME_CHANGED, REPEAT_MODE_CHANGED, SHUFFLE_TOGGLED, PLAYBACK_SPEED_CHANGED } from '../actions/types';
+import { SONG_SELECTED, VOLUME_CHANGED, REPEAT_MODE_CHANGED, SHUFFLE_TOGGLED, PLAYBACK_SPEED_CHANGED, AUTOPLAY_TOGGLED } from '../actions/types';
 
 const REPEAT_MODES = ['none', 'one', 'all'];
 
@@ -71,6 +71,15 @@ const volumeReducer = (volume = initialVolume, action) => {
   return volume;
 };
 
+const storedAutoPlay = localStorage.getItem('autoPlay') === 'true';
+
+const autoPlayReducer = (autoPlay = storedAutoPlay, action) => {
+  if (action.type === AUTOPLAY_TOGGLED) {
+    return !autoPlay;
+  }
+  return autoPlay;
+};
+
 export default combineReducers({
   songs: songsReducer,
   selectedSong: selectedSongReducer,
@@ -78,5 +87,6 @@ export default combineReducers({
   repeatMode: repeatModeReducer,
   shuffle: shuffleReducer,
   playbackSpeed: playbackSpeedReducer,
-  volume: volumeReducer
+  volume: volumeReducer,
+  autoPlay: autoPlayReducer
 });
