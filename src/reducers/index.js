@@ -61,7 +61,10 @@ const playbackSpeedReducer = (playbackSpeed = 1, action) => {
   return playbackSpeed;
 };
 
-const volumeReducer = (volume = 1, action) => {
+const storedVolume = parseFloat(localStorage.getItem('volume'));
+const initialVolume = Number.isNaN(storedVolume) ? 1 : storedVolume;
+
+const volumeReducer = (volume = initialVolume, action) => {
   if (action.type === VOLUME_CHANGED) {
     return action.payload;
   }

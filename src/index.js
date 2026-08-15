@@ -10,6 +10,7 @@ const store = createStore(reducers);
 
 store.subscribe(() => {
   localStorage.setItem('shuffle', String(store.getState().shuffle));
+  localStorage.setItem('volume', String(store.getState().volume));
 });
 
 ReactDOM.render(
