@@ -713,6 +713,35 @@ describe('SongList', () => {
     expect(document.querySelector('mark')).toBeNull();
   });
 
+  it('should show an empty-state message when the search returns no results', () => {
+    jest.useFakeTimers();
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Search songs by title, artist, album, or genre'), {
+      target: { value: 'nonexistent song' },
+    });
+    act(() => jest.advanceTimersByTime(300));
+
+    expect(screen.getByText('No songs match your search or filters.')).toBeTruthy();
+    expect(screen.queryByText('No Scrubs')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Select' })).toBeNull();
+    jest.useRealTimers();
+  });
+
+  it('should not show the empty-state message when there are matching results', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    expect(screen.queryByText('No songs match your search or filters.')).toBeNull();
+  });
+
   it('should not error filtering by year when a song has no year field', () => {
     render(
       <Provider store={store}>

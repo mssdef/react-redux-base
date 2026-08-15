@@ -166,7 +166,11 @@ const SongList = () => {
         />
         <i className="calendar icon" />
       </div>
-      <div className="ui divided list">{renderList()}</div>
+      {visibleSongs.length === 0 && songs.length > 0 ? (
+        <div className="ui message">No songs match your search or filters.</div>
+      ) : (
+        <div className="ui divided list">{renderList()}</div>
+      )}
     </div>
   );
 };
