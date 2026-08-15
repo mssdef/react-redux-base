@@ -742,6 +742,54 @@ describe('SongList', () => {
     expect(screen.queryByText('No songs match your search or filters.')).toBeNull();
   });
 
+  it('should not show a clear-search button when the search field is empty', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    expect(screen.queryByRole('button', { name: 'Clear search' })).toBeNull();
+  });
+
+  it('should show a clear-search button once the user types a search term', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByLabelText('Search songs by title, artist, album, or genre'), {
+      target: { value: 'star' },
+    });
+
+    expect(screen.getByRole('button', { name: 'Clear search' })).toBeInTheDocument();
+  });
+
+  it('should clear the search term and restore the full list when the clear-search button is clicked', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    const searchInput = screen.getByLabelText('Search songs by title, artist, album, or genre');
+    jest.useFakeTimers();
+    fireEvent.change(searchInput, { target: { value: 'star' } });
+    act(() => jest.advanceTimersByTime(300));
+    expect(screen.queryByText('No Scrubs')).toBeNull();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Clear search' }));
+
+    expect(searchInput.value).toBe('');
+    expect(screen.getByText('No Scrubs')).toBeTruthy();
+    expect(screen.getByText('Macarena')).toBeTruthy();
+    expect(screen.getByText('All Star')).toBeTruthy();
+    expect(screen.getByText('I Want it That Way')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Clear search' })).toBeNull();
+    jest.useRealTimers();
+  });
+
   it('should not error filtering by year when a song has no year field', () => {
     render(
       <Provider store={store}>

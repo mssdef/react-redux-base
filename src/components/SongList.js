@@ -35,6 +35,11 @@ const SongList = () => {
     return () => clearTimeout(timeoutId);
   }, [searchTerm]);
 
+  const clearSearch = () => {
+    setSearchTerm('');
+    setDebouncedSearchTerm('');
+  };
+
   const searchKeywords = debouncedSearchTerm.trim().toLowerCase().split(/\s+/).filter(Boolean);
 
   const matchesSearch = song => {
@@ -114,7 +119,20 @@ const SongList = () => {
           value={searchTerm}
           onChange={event => setSearchTerm(event.target.value)}
         />
-        <i className="search icon" />
+        {searchTerm ? (
+          <i
+            className="close link icon"
+            role="button"
+            tabIndex={0}
+            aria-label="Clear search"
+            onClick={clearSearch}
+            onKeyDown={event => {
+              if (event.key === 'Enter' || event.key === ' ') clearSearch();
+            }}
+          />
+        ) : (
+          <i className="search icon" />
+        )}
       </div>
       <div className="ui icon input fluid">
         <input
