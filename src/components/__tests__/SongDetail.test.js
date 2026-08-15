@@ -53,6 +53,12 @@ describe('SongDetail song schema expansion', () => {
     expect(screen.getByText('No Scrubs')).toBeInTheDocument();
     expect(screen.queryByText('TLC')).toBeNull();
   });
+
+  it('binds the selected song audioUrl to the audio element src', () => {
+    const store = mockStore({ ...baseState, selectedSong: { ...fullSong, audioUrl: 'https://example.com/song.mp3' } });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    expect(document.querySelector('audio').src).toBe('https://example.com/song.mp3');
+  });
 });
 
 describe('SongDetail auto-advance', () => {

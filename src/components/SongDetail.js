@@ -132,7 +132,7 @@ const SongDetail = () => {
             </div>
           </div>
           <div className="extra content">
-            <audio ref={audioRef} onEnded={handleEnded} aria-label={`Audio player for ${song.title}`} />
+            <audio ref={audioRef} src={song.audioUrl} onEnded={handleEnded} aria-label={`Audio player for ${song.title}`} />
             <button
               className="ui button primary fluid"
               aria-label={isPlaying ? `Pause ${song.title}` : `Play ${song.title}`}
