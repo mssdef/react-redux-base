@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { previousSong, nextSong, shuffleNext, cycleRepeatMode, toggleShuffle, setIsPlaying, setCurrentTime } from '../actions';
+import { previousSong, nextSong, shuffleNext, cycleRepeatMode, toggleShuffle, setIsPlaying, setCurrentTime, setVolume } from '../actions';
 import { parseDurationToSeconds } from '../utils/duration';
 
 const MiniPlayer = () => {
@@ -10,6 +10,7 @@ const MiniPlayer = () => {
   const songs = useSelector(state => state.songs);
   const isPlaying = useSelector(state => state.isPlaying);
   const currentTime = useSelector(state => state.currentTime) || 0;
+  const volume = useSelector(state => state.volume) ?? 1;
   const dispatch = useDispatch();
   const navDisabled = !songs || songs.length < 2;
   const duration = selectedSong ? parseDurationToSeconds(selectedSong.duration) : 0;
@@ -24,6 +25,7 @@ const MiniPlayer = () => {
     const fraction = Math.min(1, Math.max(0, (e.clientX - left) / width));
     dispatch(setCurrentTime(fraction * duration));
   };
+  const handleVolumeChange = (e) => dispatch(setVolume(parseFloat(e.target.value)));
 
   return (
     <div
@@ -133,6 +135,19 @@ const MiniPlayer = () => {
         >
           Shuffle: {shuffle ? 'on' : 'off'}
         </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em' }}>
+          <i className="volume up icon" aria-hidden="true"></i>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={volume}
+            onChange={handleVolumeChange}
+            className="ui range input"
+            aria-label="Volume"
+          />
+        </div>
       </div>
     </div>
   );

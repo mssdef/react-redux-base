@@ -332,4 +332,27 @@ describe('MiniPlayer', () => {
     fireEvent.click(progressBar, { clientX: 100 });
     expect(store.getActions()).not.toContainEqual(expect.objectContaining({ type: 'CURRENT_TIME_CHANGED' }));
   });
+
+  it('shows a volume slider reflecting the current volume', () => {
+    const store = mockStore({ selectedSong: null, shuffle: false, repeatMode: 'none', songs: twoSongs, volume: 0.6 });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    const volumeSlider = screen.getByLabelText('Volume');
+    expect(volumeSlider).toHaveValue('0.6');
+  });
+
+  it('dispatches VOLUME_CHANGED when the volume slider changes', () => {
+    const store = mockStore({ selectedSong: null, shuffle: false, repeatMode: 'none', songs: twoSongs, volume: 0.6 });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    const volumeSlider = screen.getByLabelText('Volume');
+    fireEvent.change(volumeSlider, { target: { value: '0.3' } });
+    expect(store.getActions()).toContainEqual({ type: 'VOLUME_CHANGED', payload: 0.3 });
+  });
 });
