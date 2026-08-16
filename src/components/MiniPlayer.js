@@ -1,10 +1,11 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { previousSong, nextSong, shuffleNext } from '../actions';
+import { previousSong, nextSong, shuffleNext, cycleRepeatMode, toggleShuffle } from '../actions';
 
 const MiniPlayer = () => {
   const selectedSong = useSelector(state => state.selectedSong);
   const shuffle = useSelector(state => state.shuffle);
+  const repeatMode = useSelector(state => state.repeatMode);
   const songs = useSelector(state => state.songs);
   const dispatch = useDispatch();
   const navDisabled = !songs || songs.length < 2;
@@ -51,6 +52,23 @@ const MiniPlayer = () => {
         disabled={navDisabled}
       >
         <i className="step forward icon" aria-hidden="true"></i>
+      </button>
+      <button
+        className="ui icon button inverted"
+        type="button"
+        onClick={() => dispatch(cycleRepeatMode())}
+        aria-label={`Repeat: ${repeatMode}`}
+      >
+        Repeat: {repeatMode}
+      </button>
+      <button
+        className={`ui icon button inverted${shuffle ? ' active' : ''}`}
+        type="button"
+        onClick={() => dispatch(toggleShuffle())}
+        aria-label={`Shuffle: ${shuffle ? 'on' : 'off'}`}
+        aria-pressed={shuffle}
+      >
+        Shuffle: {shuffle ? 'on' : 'off'}
       </button>
     </div>
   );

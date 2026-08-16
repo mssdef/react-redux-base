@@ -13,7 +13,7 @@ describe('MiniPlayer', () => {
   ];
 
   it('shows "No song selected" when no song is selected', () => {
-    const store = mockStore({ selectedSong: null, shuffle: false, songs: twoSongs });
+    const store = mockStore({ selectedSong: null, shuffle: false, repeatMode: 'none', songs: twoSongs });
     render(
       <Provider store={store}>
         <MiniPlayer />
@@ -26,6 +26,7 @@ describe('MiniPlayer', () => {
     const store = mockStore({
       selectedSong: { title: 'All Star', duration: '3:15' },
       shuffle: false,
+      repeatMode: 'none',
       songs: twoSongs,
     });
     render(
@@ -40,6 +41,7 @@ describe('MiniPlayer', () => {
     const store = mockStore({
       selectedSong: { title: 'All Star', duration: '3:15' },
       shuffle: false,
+      repeatMode: 'none',
       songs: twoSongs,
     });
     render(
@@ -55,6 +57,7 @@ describe('MiniPlayer', () => {
     const store = mockStore({
       selectedSong: { title: 'All Star', duration: '3:15' },
       shuffle: false,
+      repeatMode: 'none',
       songs: twoSongs,
     });
     render(
@@ -70,6 +73,7 @@ describe('MiniPlayer', () => {
     const store = mockStore({
       selectedSong: { title: 'All Star', duration: '3:15' },
       shuffle: true,
+      repeatMode: 'none',
       songs: twoSongs,
     });
     render(
@@ -82,7 +86,7 @@ describe('MiniPlayer', () => {
   });
 
   it('renders as a fixed region with aria-label "Mini player"', () => {
-    const store = mockStore({ selectedSong: null, shuffle: false, songs: twoSongs });
+    const store = mockStore({ selectedSong: null, shuffle: false, repeatMode: 'none', songs: twoSongs });
     render(
       <Provider store={store}>
         <MiniPlayer />
@@ -95,6 +99,7 @@ describe('MiniPlayer', () => {
     const store = mockStore({
       selectedSong: { title: 'All Star', duration: '3:15' },
       shuffle: false,
+      repeatMode: 'none',
       songs: [{ id: 'song-1', title: 'All Star', duration: '3:15' }],
     });
     render(
@@ -110,6 +115,7 @@ describe('MiniPlayer', () => {
     const store = mockStore({
       selectedSong: { title: 'All Star', duration: '3:15' },
       shuffle: false,
+      repeatMode: 'none',
       songs: twoSongs,
     });
     render(
@@ -119,5 +125,41 @@ describe('MiniPlayer', () => {
     );
     expect(screen.getByRole('button', { name: 'Previous' })).toBeEnabled();
     expect(screen.getByRole('button', { name: 'Next' })).toBeEnabled();
+  });
+
+  it('shows the current repeat mode and dispatches REPEAT_MODE_CHANGED when clicked', () => {
+    const store = mockStore({
+      selectedSong: { title: 'All Star', duration: '3:15' },
+      shuffle: false,
+      repeatMode: 'one',
+      songs: twoSongs,
+    });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    const repeatButton = screen.getByRole('button', { name: 'Repeat: one' });
+    expect(repeatButton).toBeInTheDocument();
+    fireEvent.click(repeatButton);
+    expect(store.getActions()).toContainEqual({ type: 'REPEAT_MODE_CHANGED' });
+  });
+
+  it('shows the current shuffle state and dispatches SHUFFLE_TOGGLED when clicked', () => {
+    const store = mockStore({
+      selectedSong: { title: 'All Star', duration: '3:15' },
+      shuffle: false,
+      repeatMode: 'none',
+      songs: twoSongs,
+    });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    const shuffleButton = screen.getByRole('button', { name: 'Shuffle: off' });
+    expect(shuffleButton).toHaveAttribute('aria-pressed', 'false');
+    fireEvent.click(shuffleButton);
+    expect(store.getActions()).toContainEqual({ type: 'SHUFFLE_TOGGLED' });
   });
 });
