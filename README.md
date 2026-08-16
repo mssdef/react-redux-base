@@ -1,6 +1,6 @@
 # Music Player - React Redux Application
 
-This is React/Redux e-commerce frontend application connected to Magento GraphQL API
+A React/Redux music-player frontend. Songs are loaded from a static local JSON catalog — there is no Magento, GraphQL, or backend API involved.
 
 
 ## Features
