@@ -29,10 +29,14 @@ const App = () => {
           </ErrorBoundary>
         </div>
         <div className="column eight wide">
-          <SongDetail />
+          <ErrorBoundary>
+            <SongDetail />
+          </ErrorBoundary>
         </div>
       </div>
-      <MiniPlayer />
+      <ErrorBoundary>
+        <MiniPlayer />
+      </ErrorBoundary>
     </div>
   );
 };
