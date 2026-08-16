@@ -299,4 +299,37 @@ describe('MiniPlayer', () => {
     expect(progressBar).toHaveAttribute('aria-valuenow', '0');
     expect(progressBar).toHaveAttribute('aria-valuemax', '0');
   });
+
+  it('dispatches CURRENT_TIME_CHANGED with the seeked time when the progress bar is clicked', () => {
+    const store = mockStore({
+      selectedSong: { title: 'All Star', duration: '4:00' },
+      shuffle: false,
+      repeatMode: 'none',
+      songs: twoSongs,
+      isPlaying: false,
+      currentTime: 0,
+    });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    const progressBar = screen.getByRole('progressbar', { name: 'Playback progress' });
+    progressBar.getBoundingClientRect = () => ({ left: 0, width: 200 });
+    fireEvent.click(progressBar, { clientX: 100 });
+    expect(store.getActions()).toContainEqual({ type: 'CURRENT_TIME_CHANGED', payload: 120 });
+  });
+
+  it('does not dispatch CURRENT_TIME_CHANGED when clicking the progress bar with no song selected', () => {
+    const store = mockStore({ selectedSong: null, shuffle: false, repeatMode: 'none', songs: twoSongs, isPlaying: false, currentTime: 0 });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    const progressBar = screen.getByRole('progressbar', { name: 'Playback progress' });
+    progressBar.getBoundingClientRect = () => ({ left: 0, width: 200 });
+    fireEvent.click(progressBar, { clientX: 100 });
+    expect(store.getActions()).not.toContainEqual(expect.objectContaining({ type: 'CURRENT_TIME_CHANGED' }));
+  });
 });

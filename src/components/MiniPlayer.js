@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { previousSong, nextSong, shuffleNext, cycleRepeatMode, toggleShuffle, setIsPlaying } from '../actions';
+import { previousSong, nextSong, shuffleNext, cycleRepeatMode, toggleShuffle, setIsPlaying, setCurrentTime } from '../actions';
 import { parseDurationToSeconds } from '../utils/duration';
 
 const MiniPlayer = () => {
@@ -18,6 +18,12 @@ const MiniPlayer = () => {
   const handlePrevious = () => dispatch(previousSong());
   const handleNext = () => dispatch(shuffle ? shuffleNext() : nextSong());
   const handleTogglePlay = () => dispatch(setIsPlaying(!isPlaying));
+  const handleSeek = (e) => {
+    if (!selectedSong || duration <= 0) return;
+    const { left, width } = e.currentTarget.getBoundingClientRect();
+    const fraction = Math.min(1, Math.max(0, (e.clientX - left) / width));
+    dispatch(setCurrentTime(fraction * duration));
+  };
 
   return (
     <div
@@ -41,11 +47,13 @@ const MiniPlayer = () => {
         aria-valuemin={0}
         aria-valuemax={duration}
         aria-valuenow={Math.min(currentTime, duration)}
+        onClick={handleSeek}
         style={{
           height: '3px',
           width: '100%',
           backgroundColor: 'rgba(255, 255, 255, 0.2)',
           marginBottom: '0.75em',
+          cursor: selectedSong && duration > 0 ? 'pointer' : 'default',
         }}
       >
         <div
