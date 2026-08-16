@@ -92,6 +92,12 @@ const SongDetail = () => {
     setCurrentTime(audio.currentTime);
   }, []);
 
+  const handleTimeUpdate = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    setCurrentTime(audio.currentTime);
+  }, []);
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.code === 'Escape' && isFullScreen) {
@@ -154,7 +160,7 @@ const SongDetail = () => {
             </div>
           </div>
           <div className="extra content">
-            <audio ref={audioRef} src={song.audioUrl} onEnded={handleEnded} aria-label={`Audio player for ${song.title}`} />
+            <audio ref={audioRef} src={song.audioUrl} onEnded={handleEnded} onTimeUpdate={handleTimeUpdate} aria-label={`Audio player for ${song.title}`} />
             <button
               className="ui button primary fluid"
               aria-label={isPlaying ? `Pause ${song.title}` : `Play ${song.title}`}

@@ -84,6 +84,17 @@ describe('SongDetail auto-advance', () => {
   });
 });
 
+describe('SongDetail currentTime updates', () => {
+  it('updates displayed currentTime on audio timeupdate event', () => {
+    const store = mockStore({ ...baseState });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    const audio = document.querySelector('audio');
+    audio.currentTime = 42;
+    fireEvent(audio, new Event('timeupdate'));
+    expect(screen.getByText('42 / 4:05')).toBeInTheDocument();
+  });
+});
+
 describe('SongDetail mute toggle', () => {
   it('renders Mute button when song is selected', () => {
     const store = mockStore({ ...baseState });
