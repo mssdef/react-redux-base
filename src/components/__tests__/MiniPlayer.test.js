@@ -355,4 +355,37 @@ describe('MiniPlayer', () => {
     fireEvent.change(volumeSlider, { target: { value: '0.3' } });
     expect(store.getActions()).toContainEqual({ type: 'VOLUME_CHANGED', payload: 0.3 });
   });
+
+  it('shows a Mute button when volume is above zero', () => {
+    const store = mockStore({ selectedSong: null, shuffle: false, repeatMode: 'none', songs: twoSongs, volume: 0.6 });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    expect(screen.getByRole('button', { name: 'Mute' })).toBeInTheDocument();
+  });
+
+  it('dispatches VOLUME_CHANGED with 0 when the Mute button is clicked', () => {
+    const store = mockStore({ selectedSong: null, shuffle: false, repeatMode: 'none', songs: twoSongs, volume: 0.6 });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Mute' }));
+    expect(store.getActions()).toContainEqual({ type: 'VOLUME_CHANGED', payload: 0 });
+  });
+
+  it('shows an Unmute button and restores volume to 1 when volume is zero', () => {
+    const store = mockStore({ selectedSong: null, shuffle: false, repeatMode: 'none', songs: twoSongs, volume: 0 });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    const unmuteButton = screen.getByRole('button', { name: 'Unmute' });
+    fireEvent.click(unmuteButton);
+    expect(store.getActions()).toContainEqual({ type: 'VOLUME_CHANGED', payload: 1 });
+  });
 });

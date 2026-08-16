@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { previousSong, nextSong, shuffleNext, cycleRepeatMode, toggleShuffle, setIsPlaying, setCurrentTime, setVolume } from '../actions';
 import { parseDurationToSeconds } from '../utils/duration';
@@ -26,6 +26,12 @@ const MiniPlayer = () => {
     dispatch(setCurrentTime(fraction * duration));
   };
   const handleVolumeChange = (e) => dispatch(setVolume(parseFloat(e.target.value)));
+  const isMuted = volume === 0;
+  const previousVolumeRef = useRef(volume > 0 ? volume : 1);
+  useEffect(() => {
+    if (volume > 0) previousVolumeRef.current = volume;
+  }, [volume]);
+  const handleToggleMute = () => dispatch(setVolume(isMuted ? previousVolumeRef.current : 0));
 
   return (
     <div
@@ -136,7 +142,14 @@ const MiniPlayer = () => {
           Shuffle: {shuffle ? 'on' : 'off'}
         </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em' }}>
-          <i className="volume up icon" aria-hidden="true"></i>
+          <button
+            className="ui icon button inverted"
+            aria-label={isMuted ? 'Unmute' : 'Mute'}
+            type="button"
+            onClick={handleToggleMute}
+          >
+            <i className={`volume ${isMuted ? 'off' : 'up'} icon`} aria-hidden="true"></i>
+          </button>
           <input
             type="range"
             min="0"
