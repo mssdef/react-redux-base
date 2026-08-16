@@ -6,7 +6,12 @@ This is React/Redux e-commerce frontend application connected to Magento GraphQL
 ## Features
 
 - 🎵 **Song Management**: View and select songs from a curated list
-- 🔍 **Search Functionality**: Filter songs by title in real-time
+- 🔍 **Search Functionality**: Filter songs by title, artist, album, genre, and year in real-time
+- ▶️ **Audio Playback**: Play/pause, seek, mute, and playback speed control via the HTML `<audio>` element
+- 🔀 **Shuffle & Repeat**: Shuffle queue order and cycle repeat modes (none / one / all)
+- ⌨️ **Keyboard Shortcuts**: Space to play/pause, arrow keys to seek, M to mute, Escape to close full-screen player
+- 🖥️ **Full-Screen Player & Mini Player**: Expanded playback view plus a persistent bottom mini player
+- 📈 **Waveform Visualizer**: Live canvas waveform driven by the Web Audio API
 - 🎨 **Modern UI**: Beautiful interface using Semantic UI framework
 - ♿ **Accessibility**: ARIA labels and semantic HTML for better accessibility
 - 🛡️ **Error Handling**: Error boundaries for graceful error recovery
@@ -66,10 +71,14 @@ src/
 ├── actions/
 │   └── index.js          # Redux actions
 ├── components/
-│   ├── App.js           # Main application component
-│   ├── ErrorBoundary.js # Error handling component
-│   ├── SongDetail.js    # Song details display
-│   └── SongList.js      # Song list with search
+│   ├── App.js              # Main application component
+│   ├── ErrorBoundary.js    # Error handling component
+│   ├── SongDetail.js       # Song details, audio controls, keyboard shortcuts
+│   ├── SongList.js         # Song list with search/filtering
+│   ├── MiniPlayer.js       # Fixed bottom playback bar
+│   ├── FullScreenPlayer.js # Full-screen player modal
+│   ├── Waveform.js         # Web Audio API waveform visualizer
+│   └── LoadingSpinner.js   # Reusable loading spinner
 ├── reducers/
 │   └── index.js         # Redux reducers
 └── index.js             # Application entry point
@@ -85,7 +94,6 @@ src/
 
 ## Future Enhancements
 
-- 🎵 **Audio Playback**: Actual music playing functionality
 - 📱 **PWA Support**: Progressive Web App features
 - 🎨 **Dark Mode**: Theme switching capability
 - 📊 **Analytics**: User interaction tracking
