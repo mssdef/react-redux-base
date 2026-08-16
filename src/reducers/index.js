@@ -37,7 +37,10 @@ const nextSongReducer = (currentSongIndex = 0, action) => {
   return currentSongIndex;
 };
 
-const repeatModeReducer = (repeatMode = 'none', action) => {
+const storedRepeatMode = localStorage.getItem('repeatMode');
+const initialRepeatMode = REPEAT_MODES.includes(storedRepeatMode) ? storedRepeatMode : 'none';
+
+const repeatModeReducer = (repeatMode = initialRepeatMode, action) => {
   if (action.type === REPEAT_MODE_CHANGED) {
     const currentIndex = REPEAT_MODES.indexOf(repeatMode);
     return REPEAT_MODES[(currentIndex + 1) % REPEAT_MODES.length];

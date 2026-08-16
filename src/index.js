@@ -12,6 +12,7 @@ store.subscribe(() => {
   localStorage.setItem('shuffle', String(store.getState().shuffle));
   localStorage.setItem('volume', String(store.getState().volume));
   localStorage.setItem('autoPlay', String(store.getState().autoPlay));
+  localStorage.setItem('repeatMode', store.getState().repeatMode);
 });
 
 ReactDOM.render(

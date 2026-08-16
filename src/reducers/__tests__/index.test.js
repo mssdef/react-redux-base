@@ -86,3 +86,37 @@ describe('autoPlay reducer localStorage persistence', () => {
     expect(state.autoPlay).toBe(true);
   });
 });
+
+describe('repeatMode reducer localStorage persistence', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    jest.resetModules();
+  });
+
+  it('defaults repeatMode to none when localStorage has no stored value', () => {
+    const reducers = require('../index').default;
+    const state = reducers(undefined, { type: '@@INIT' });
+    expect(state.repeatMode).toBe('none');
+  });
+
+  it('initializes repeatMode from a value stored in localStorage', () => {
+    localStorage.setItem('repeatMode', 'all');
+    const reducers = require('../index').default;
+    const state = reducers(undefined, { type: '@@INIT' });
+    expect(state.repeatMode).toBe('all');
+  });
+
+  it('falls back to none when localStorage has an invalid repeatMode value', () => {
+    localStorage.setItem('repeatMode', 'bogus');
+    const reducers = require('../index').default;
+    const state = reducers(undefined, { type: '@@INIT' });
+    expect(state.repeatMode).toBe('none');
+  });
+
+  it('still cycles on REPEAT_MODE_CHANGED after initializing from localStorage', () => {
+    localStorage.setItem('repeatMode', 'one');
+    const reducers = require('../index').default;
+    const state = reducers(undefined, { type: 'REPEAT_MODE_CHANGED' });
+    expect(state.repeatMode).toBe('all');
+  });
+});
