@@ -39,6 +39,22 @@ describe('SongList', () => {
     expect(screen.getByRole('button', { name: 'Previous' })).toBeInTheDocument();
   });
 
+  it('should show a Now Playing indicator only on the active row', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    const activeLabels = screen.getAllByText('Now Playing');
+    expect(activeLabels).toHaveLength(1);
+
+    const activeItem = activeLabels[0].closest('.item');
+    expect(activeItem).toHaveClass('active');
+    expect(activeItem).toHaveAttribute('aria-current', 'true');
+    expect(activeItem).toHaveTextContent('Macarena');
+  });
+
   it('should dispatch PREVIOUS_SONG when Previous button is clicked', () => {
     render(
       <Provider store={store}>

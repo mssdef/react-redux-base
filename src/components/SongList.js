@@ -62,8 +62,13 @@ const SongList = () => {
 
   const renderList = () => {
     return visibleSongs.map(({ song, index }) => {
+      const isCurrentSong = index === currentSongIndex;
       return (
-        <div className="item" key={song.title}>
+        <div
+          className={`item${isCurrentSong ? ' active' : ''}`}
+          key={song.title}
+          aria-current={isCurrentSong ? 'true' : undefined}
+        >
           <div className="right floated content">
             <button
               className="ui button primary"
@@ -71,7 +76,7 @@ const SongList = () => {
             >
               Select
             </button>
-            {index === currentSongIndex && (
+            {isCurrentSong && (
               <>
                 <button
                   className="ui button"
@@ -103,7 +108,13 @@ const SongList = () => {
               </>
             )}
           </div>
-          <div className="content">{highlightMatches(song.title, searchKeywords)}</div>
+          <div className="content">
+            {isCurrentSong && (
+              <i className="play icon" aria-hidden="true" title="Now playing"></i>
+            )}
+            {highlightMatches(song.title, searchKeywords)}
+            {isCurrentSong && <span className="ui label mini">Now Playing</span>}
+          </div>
         </div>
       );
     });
