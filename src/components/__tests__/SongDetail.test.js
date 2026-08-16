@@ -271,6 +271,22 @@ describe('SongDetail volume control', () => {
   });
 });
 
+describe('SongDetail seek bar', () => {
+  it('sets numeric max in seconds when duration is an M:SS string', () => {
+    const store = mockStore({ ...baseState, selectedSong: { ...song, duration: '4:05' } });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    const seekBar = screen.getByLabelText('Seek bar for No Scrubs');
+    expect(seekBar.max).toBe('245');
+  });
+
+  it('uses numeric duration directly when duration is already a number', () => {
+    const store = mockStore({ ...baseState, selectedSong: { ...song, duration: 300 } });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    const seekBar = screen.getByLabelText('Seek bar for No Scrubs');
+    expect(seekBar.max).toBe('300');
+  });
+});
+
 describe('SongDetail auto-play preference', () => {
   beforeAll(() => {
     window.HTMLMediaElement.prototype.play = jest.fn().mockResolvedValue(undefined);

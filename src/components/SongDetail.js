@@ -4,6 +4,18 @@ import { nextSong, shuffleNext, setPlaybackSpeed, setVolume, toggleAutoPlay } fr
 import FullScreenPlayer from './FullScreenPlayer';
 import Waveform from './Waveform';
 
+const parseDurationToSeconds = (duration) => {
+  if (typeof duration === 'number') return duration;
+  if (typeof duration === 'string') {
+    const parts = duration.split(':').map(Number);
+    if (parts.length === 2 && parts.every(n => !Number.isNaN(n))) {
+      const [minutes, seconds] = parts;
+      return minutes * 60 + seconds;
+    }
+  }
+  return 0;
+};
+
 const SongDetail = () => {
   const song = useSelector(state => state.selectedSong);
   const [currentTime, setCurrentTime] = useState(0);
@@ -185,7 +197,7 @@ const SongDetail = () => {
             <input
               type="range"
               min="0"
-              max={song.duration}
+              max={parseDurationToSeconds(song.duration)}
               value={currentTime}
               onChange={(e) => setCurrentTime(e.target.value)}
               className="ui range input fluid"
