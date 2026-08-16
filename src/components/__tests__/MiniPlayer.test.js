@@ -162,4 +162,50 @@ describe('MiniPlayer', () => {
     fireEvent.click(shuffleButton);
     expect(store.getActions()).toContainEqual({ type: 'SHUFFLE_TOGGLED' });
   });
+
+  it('shows a Play button and dispatches PLAYING_STATE_CHANGED with true when clicked', () => {
+    const store = mockStore({
+      selectedSong: { title: 'All Star', duration: '3:15' },
+      shuffle: false,
+      repeatMode: 'none',
+      songs: twoSongs,
+      isPlaying: false,
+    });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    const playButton = screen.getByRole('button', { name: 'Play' });
+    fireEvent.click(playButton);
+    expect(store.getActions()).toContainEqual({ type: 'PLAYING_STATE_CHANGED', payload: true });
+  });
+
+  it('shows a Pause button and dispatches PLAYING_STATE_CHANGED with false when clicked while playing', () => {
+    const store = mockStore({
+      selectedSong: { title: 'All Star', duration: '3:15' },
+      shuffle: false,
+      repeatMode: 'none',
+      songs: twoSongs,
+      isPlaying: true,
+    });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    const pauseButton = screen.getByRole('button', { name: 'Pause' });
+    fireEvent.click(pauseButton);
+    expect(store.getActions()).toContainEqual({ type: 'PLAYING_STATE_CHANGED', payload: false });
+  });
+
+  it('disables the play/pause button when no song is selected', () => {
+    const store = mockStore({ selectedSong: null, shuffle: false, repeatMode: 'none', songs: twoSongs, isPlaying: false });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    expect(screen.getByRole('button', { name: 'Play' })).toBeDisabled();
+  });
 });

@@ -53,6 +53,17 @@ const SongDetail = () => {
     }
   }, [isPlaying, dispatch]);
 
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isPlaying) {
+      const playPromise = audio.play();
+      if (playPromise !== undefined) playPromise.catch(() => {});
+    } else {
+      audio.pause();
+    }
+  }, [isPlaying]);
+
   const toggleMute = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
