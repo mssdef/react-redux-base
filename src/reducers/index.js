@@ -80,7 +80,7 @@ const autoPlayReducer = (autoPlay = storedAutoPlay, action) => {
   return autoPlay;
 };
 
-export default combineReducers({
+const combinedReducer = combineReducers({
   songs: songsReducer,
   selectedSong: selectedSongReducer,
   currentSongIndex: nextSongReducer,
@@ -90,3 +90,20 @@ export default combineReducers({
   volume: volumeReducer,
   autoPlay: autoPlayReducer
 });
+
+const QUEUE_NAVIGATION_ACTIONS = ['NEXT_SONG', 'PREVIOUS_SONG', 'NEXT_SONG_SHUFFLE'];
+
+const rootReducer = (state, action) => {
+  const nextState = combinedReducer(state, action);
+
+  if (QUEUE_NAVIGATION_ACTIONS.includes(action.type)) {
+    return {
+      ...nextState,
+      selectedSong: songs[nextState.currentSongIndex] || null
+    };
+  }
+
+  return nextState;
+};
+
+export default rootReducer;

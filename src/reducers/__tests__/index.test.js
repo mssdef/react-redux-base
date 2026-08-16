@@ -1,3 +1,39 @@
+describe('selectedSong sync with currentSongIndex on next/previous', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    jest.resetModules();
+  });
+
+  it('sets selectedSong to the song at the new index on NEXT_SONG', () => {
+    const reducers = require('../index').default;
+    const songs = require('../../data/songs.json');
+    const state = reducers(undefined, { type: 'NEXT_SONG' });
+    expect(state.currentSongIndex).toBe(1);
+    expect(state.selectedSong).toEqual(songs[1]);
+  });
+
+  it('sets selectedSong to the song at the new index on PREVIOUS_SONG', () => {
+    const reducers = require('../index').default;
+    const songs = require('../../data/songs.json');
+    const state = reducers(undefined, { type: 'PREVIOUS_SONG' });
+    expect(state.currentSongIndex).toBe(songs.length - 1);
+    expect(state.selectedSong).toEqual(songs[songs.length - 1]);
+  });
+
+  it('sets selectedSong to the song at the new index on NEXT_SONG_SHUFFLE', () => {
+    const reducers = require('../index').default;
+    const songs = require('../../data/songs.json');
+    const state = reducers(undefined, { type: 'NEXT_SONG_SHUFFLE' });
+    expect(state.selectedSong).toEqual(songs[state.currentSongIndex]);
+  });
+
+  it('does not touch selectedSong for unrelated actions', () => {
+    const reducers = require('../index').default;
+    const state = reducers(undefined, { type: '@@INIT' });
+    expect(state.selectedSong).toBeNull();
+  });
+});
+
 describe('volume reducer localStorage persistence', () => {
   beforeEach(() => {
     localStorage.clear();
