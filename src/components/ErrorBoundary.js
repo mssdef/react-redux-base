@@ -21,6 +21,9 @@ class ErrorBoundary extends React.Component {
           <div className="ui negative message">
             <div className="header">Something went wrong</div>
             <p>{String(this.state.error)}</p>
+            <button type="button" className="ui button primary" onClick={this.handleRefresh}>
+              Refresh
+            </button>
           </div>
         </div>
       );
