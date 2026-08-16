@@ -821,6 +821,35 @@ describe('SongList', () => {
     expect(screen.queryByText('Macarena')).toBeNull();
   });
 
+  it('should disable Next and Previous when the catalog has fewer than 2 songs', () => {
+    const singleSongStore = mockStore({
+      songs: [{ id: 'song-1', title: 'No Scrubs', duration: '4:05' }],
+      currentSongIndex: 0,
+      repeatMode: 'none',
+      shuffle: false,
+    });
+
+    render(
+      <Provider store={singleSongStore}>
+        <SongList />
+      </Provider>
+    );
+
+    expect(screen.getByRole('button', { name: 'Next' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Previous' })).toBeDisabled();
+  });
+
+  it('should enable Next and Previous when the catalog has 2 or more songs', () => {
+    render(
+      <Provider store={store}>
+        <SongList />
+      </Provider>
+    );
+
+    expect(screen.getByRole('button', { name: 'Next' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Previous' })).toBeEnabled();
+  });
+
   it('should render both songs distinctly when two songs share the same title but have different ids', () => {
     const duplicateTitleStore = mockStore({
       songs: [

@@ -81,12 +81,14 @@ const SongList = () => {
                 <button
                   className="ui button"
                   onClick={() => dispatch(shuffle ? shuffleNext() : nextSong())}
+                  disabled={songs.length < 2}
                 >
                   Next
                 </button>
                 <button
                   className="ui button"
                   onClick={() => dispatch(previousSong())}
+                  disabled={songs.length < 2}
                 >
                   Previous
                 </button>

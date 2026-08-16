@@ -5,7 +5,9 @@ import { previousSong, nextSong, shuffleNext } from '../actions';
 const MiniPlayer = () => {
   const selectedSong = useSelector(state => state.selectedSong);
   const shuffle = useSelector(state => state.shuffle);
+  const songs = useSelector(state => state.songs);
   const dispatch = useDispatch();
+  const navDisabled = !songs || songs.length < 2;
 
   const handlePrevious = () => dispatch(previousSong());
   const handleNext = () => dispatch(shuffle ? shuffleNext() : nextSong());
@@ -34,6 +36,7 @@ const MiniPlayer = () => {
         aria-label="Previous"
         type="button"
         onClick={handlePrevious}
+        disabled={navDisabled}
       >
         <i className="step backward icon" aria-hidden="true"></i>
       </button>
@@ -45,6 +48,7 @@ const MiniPlayer = () => {
         aria-label="Next"
         type="button"
         onClick={handleNext}
+        disabled={navDisabled}
       >
         <i className="step forward icon" aria-hidden="true"></i>
       </button>

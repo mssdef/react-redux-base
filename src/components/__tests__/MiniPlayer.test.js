@@ -7,8 +7,13 @@ import MiniPlayer from '../MiniPlayer';
 const mockStore = configureStore([]);
 
 describe('MiniPlayer', () => {
+  const twoSongs = [
+    { id: 'song-1', title: 'All Star', duration: '3:15' },
+    { id: 'song-2', title: 'No Scrubs', duration: '4:05' },
+  ];
+
   it('shows "No song selected" when no song is selected', () => {
-    const store = mockStore({ selectedSong: null, shuffle: false });
+    const store = mockStore({ selectedSong: null, shuffle: false, songs: twoSongs });
     render(
       <Provider store={store}>
         <MiniPlayer />
@@ -21,6 +26,7 @@ describe('MiniPlayer', () => {
     const store = mockStore({
       selectedSong: { title: 'All Star', duration: '3:15' },
       shuffle: false,
+      songs: twoSongs,
     });
     render(
       <Provider store={store}>
@@ -34,6 +40,7 @@ describe('MiniPlayer', () => {
     const store = mockStore({
       selectedSong: { title: 'All Star', duration: '3:15' },
       shuffle: false,
+      songs: twoSongs,
     });
     render(
       <Provider store={store}>
@@ -48,6 +55,7 @@ describe('MiniPlayer', () => {
     const store = mockStore({
       selectedSong: { title: 'All Star', duration: '3:15' },
       shuffle: false,
+      songs: twoSongs,
     });
     render(
       <Provider store={store}>
@@ -62,6 +70,7 @@ describe('MiniPlayer', () => {
     const store = mockStore({
       selectedSong: { title: 'All Star', duration: '3:15' },
       shuffle: true,
+      songs: twoSongs,
     });
     render(
       <Provider store={store}>
@@ -73,12 +82,42 @@ describe('MiniPlayer', () => {
   });
 
   it('renders as a fixed region with aria-label "Mini player"', () => {
-    const store = mockStore({ selectedSong: null, shuffle: false });
+    const store = mockStore({ selectedSong: null, shuffle: false, songs: twoSongs });
     render(
       <Provider store={store}>
         <MiniPlayer />
       </Provider>
     );
     expect(screen.getByRole('region', { name: 'Mini player' })).toBeInTheDocument();
+  });
+
+  it('disables Previous and Next when the catalog has fewer than 2 songs', () => {
+    const store = mockStore({
+      selectedSong: { title: 'All Star', duration: '3:15' },
+      shuffle: false,
+      songs: [{ id: 'song-1', title: 'All Star', duration: '3:15' }],
+    });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    expect(screen.getByRole('button', { name: 'Previous' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Next' })).toBeDisabled();
+  });
+
+  it('enables Previous and Next when the catalog has 2 or more songs', () => {
+    const store = mockStore({
+      selectedSong: { title: 'All Star', duration: '3:15' },
+      shuffle: false,
+      songs: twoSongs,
+    });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    expect(screen.getByRole('button', { name: 'Previous' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Next' })).toBeEnabled();
   });
 });
