@@ -43,6 +43,14 @@ const MiniPlayer = () => {
       >
         <i className="step backward icon" aria-hidden="true"></i>
       </button>
+      {selectedSong && selectedSong.artworkUrl && (
+        <img
+          className="ui avatar image"
+          src={selectedSong.artworkUrl}
+          alt={`${selectedSong.title} artwork`}
+          style={{ width: '2.5em', height: '2.5em', objectFit: 'cover' }}
+        />
+      )}
       <span style={{ flex: 1, fontWeight: 'bold' }} aria-live="polite">
         {selectedSong ? (
           <>

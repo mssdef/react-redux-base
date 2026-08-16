@@ -67,6 +67,36 @@ describe('MiniPlayer', () => {
     expect(screen.getByText('All Star')).toBeInTheDocument();
   });
 
+  it('shows an artwork thumbnail when the selected song has an artworkUrl', () => {
+    const store = mockStore({
+      selectedSong: { title: 'All Star', duration: '3:15', artworkUrl: 'https://example.com/art.jpg' },
+      shuffle: false,
+      repeatMode: 'none',
+      songs: twoSongs,
+    });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    expect(screen.getByAltText('All Star artwork')).toHaveAttribute('src', 'https://example.com/art.jpg');
+  });
+
+  it('does not render an artwork thumbnail when the selected song has no artworkUrl', () => {
+    const store = mockStore({
+      selectedSong: { title: 'All Star', duration: '3:15' },
+      shuffle: false,
+      repeatMode: 'none',
+      songs: twoSongs,
+    });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    expect(screen.queryByAltText('All Star artwork')).not.toBeInTheDocument();
+  });
+
   it('dispatches PREVIOUS_SONG when Previous button is clicked', () => {
     const store = mockStore({
       selectedSong: { title: 'All Star', duration: '3:15' },
