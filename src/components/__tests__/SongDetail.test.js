@@ -372,3 +372,41 @@ describe('SongDetail auto-play preference', () => {
     expect(screen.getByRole('button', { name: 'Auto-play: on' })).toBeInTheDocument();
   });
 });
+
+describe('SongDetail isPlaying Redux state', () => {
+  beforeAll(() => {
+    window.HTMLMediaElement.prototype.play = jest.fn().mockResolvedValue(undefined);
+    window.HTMLMediaElement.prototype.pause = jest.fn();
+  });
+
+  beforeEach(() => {
+    window.HTMLMediaElement.prototype.play.mockClear();
+    window.HTMLMediaElement.prototype.pause.mockClear();
+  });
+
+  it('renders Play Song when isPlaying is false', () => {
+    const store = mockStore({ ...baseState, isPlaying: false });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    expect(screen.getByRole('button', { name: 'Play No Scrubs' })).toHaveTextContent('Play Song');
+  });
+
+  it('renders Pause Song when isPlaying is true', () => {
+    const store = mockStore({ ...baseState, isPlaying: true });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    expect(screen.getByRole('button', { name: 'Pause No Scrubs' })).toHaveTextContent('Pause Song');
+  });
+
+  it('dispatches PLAYING_STATE_CHANGED with true when play is clicked while paused', () => {
+    const store = mockStore({ ...baseState, isPlaying: false });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    fireEvent.click(screen.getByRole('button', { name: 'Play No Scrubs' }));
+    expect(store.getActions()).toContainEqual({ type: 'PLAYING_STATE_CHANGED', payload: true });
+  });
+
+  it('dispatches PLAYING_STATE_CHANGED with false when pause is clicked while playing', () => {
+    const store = mockStore({ ...baseState, isPlaying: true });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    fireEvent.click(screen.getByRole('button', { name: 'Pause No Scrubs' }));
+    expect(store.getActions()).toContainEqual({ type: 'PLAYING_STATE_CHANGED', payload: false });
+  });
+});

@@ -1,4 +1,4 @@
-import { SONG_SELECTED, VOLUME_CHANGED, REPEAT_MODE_CHANGED, SHUFFLE_TOGGLED, PLAYBACK_SPEED_CHANGED, AUTOPLAY_TOGGLED } from './types';
+import { SONG_SELECTED, VOLUME_CHANGED, REPEAT_MODE_CHANGED, SHUFFLE_TOGGLED, PLAYBACK_SPEED_CHANGED, AUTOPLAY_TOGGLED, PLAYING_STATE_CHANGED } from './types';
 
 export const selectSong = song => {
   return {
@@ -54,5 +54,12 @@ export const setVolume = (volume) => {
 export const toggleAutoPlay = () => {
   return {
     type: AUTOPLAY_TOGGLED
+  };
+};
+
+export const setIsPlaying = (isPlaying) => {
+  return {
+    type: PLAYING_STATE_CHANGED,
+    payload: isPlaying
   };
 };

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { nextSong, shuffleNext, setPlaybackSpeed, setVolume, toggleAutoPlay } from '../actions';
+import { nextSong, shuffleNext, setPlaybackSpeed, setVolume, toggleAutoPlay, setIsPlaying } from '../actions';
 import FullScreenPlayer from './FullScreenPlayer';
 import Waveform from './Waveform';
 
@@ -21,7 +21,7 @@ const SongDetail = () => {
   const songs = useSelector(state => state.songs);
   const currentSongIndex = useSelector(state => state.currentSongIndex);
   const [currentTime, setCurrentTime] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const isPlaying = useSelector(state => state.isPlaying);
   const [isMuted, setIsMuted] = useState(false);
   const playbackSpeed = useSelector(state => state.playbackSpeed);
   const volume = useSelector(state => state.volume);
@@ -33,7 +33,7 @@ const SongDetail = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
 
   const handleEnded = () => {
-    setIsPlaying(false);
+    dispatch(setIsPlaying(false));
     if (repeatMode === 'one') return;
     const isEndOfQueue = currentSongIndex === songs.length - 1;
     if (isEndOfQueue && repeatMode !== 'all') return;
@@ -45,13 +45,13 @@ const SongDetail = () => {
     if (!audio) return;
     if (isPlaying) {
       audio.pause();
-      setIsPlaying(false);
+      dispatch(setIsPlaying(false));
     } else {
       const playPromise = audio.play();
       if (playPromise !== undefined) playPromise.catch(() => {});
-      setIsPlaying(true);
+      dispatch(setIsPlaying(true));
     }
-  }, [isPlaying]);
+  }, [isPlaying, dispatch]);
 
   const toggleMute = useCallback(() => {
     const audio = audioRef.current;
@@ -86,8 +86,8 @@ const SongDetail = () => {
     if (!audio) return;
     const playPromise = audio.play();
     if (playPromise !== undefined) playPromise.catch(() => {});
-    setIsPlaying(true);
-  }, [song, autoPlay]);
+    dispatch(setIsPlaying(true));
+  }, [song, autoPlay, dispatch]);
 
   const seek = useCallback((delta) => {
     const audio = audioRef.current;

@@ -126,6 +126,32 @@ describe('autoPlay reducer localStorage persistence', () => {
   });
 });
 
+describe('isPlaying reducer', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    jest.resetModules();
+  });
+
+  it('defaults isPlaying to false', () => {
+    const reducers = require('../index').default;
+    const state = reducers(undefined, { type: '@@INIT' });
+    expect(state.isPlaying).toBe(false);
+  });
+
+  it('sets isPlaying to true on PLAYING_STATE_CHANGED', () => {
+    const reducers = require('../index').default;
+    const state = reducers(undefined, { type: 'PLAYING_STATE_CHANGED', payload: true });
+    expect(state.isPlaying).toBe(true);
+  });
+
+  it('sets isPlaying back to false on PLAYING_STATE_CHANGED', () => {
+    const reducers = require('../index').default;
+    const playingState = reducers(undefined, { type: 'PLAYING_STATE_CHANGED', payload: true });
+    const state = reducers(playingState, { type: 'PLAYING_STATE_CHANGED', payload: false });
+    expect(state.isPlaying).toBe(false);
+  });
+});
+
 describe('repeatMode reducer localStorage persistence', () => {
   beforeEach(() => {
     localStorage.clear();
