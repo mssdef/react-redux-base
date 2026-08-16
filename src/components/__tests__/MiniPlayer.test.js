@@ -37,6 +37,36 @@ describe('MiniPlayer', () => {
     expect(screen.getByText('All Star')).toBeInTheDocument();
   });
 
+  it('shows the artist name beside the title when a song is selected', () => {
+    const store = mockStore({
+      selectedSong: { title: 'All Star', artist: 'Smash Mouth', duration: '3:15' },
+      shuffle: false,
+      repeatMode: 'none',
+      songs: twoSongs,
+    });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    expect(screen.getByText((content, element) => element.textContent === 'All Star — Smash Mouth')).toBeInTheDocument();
+  });
+
+  it('does not render a dash when the selected song has no artist', () => {
+    const store = mockStore({
+      selectedSong: { title: 'All Star', duration: '3:15' },
+      shuffle: false,
+      repeatMode: 'none',
+      songs: twoSongs,
+    });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    expect(screen.getByText('All Star')).toBeInTheDocument();
+  });
+
   it('dispatches PREVIOUS_SONG when Previous button is clicked', () => {
     const store = mockStore({
       selectedSong: { title: 'All Star', duration: '3:15' },

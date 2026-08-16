@@ -44,7 +44,14 @@ const MiniPlayer = () => {
         <i className="step backward icon" aria-hidden="true"></i>
       </button>
       <span style={{ flex: 1, fontWeight: 'bold' }} aria-live="polite">
-        {selectedSong ? selectedSong.title : 'No song selected'}
+        {selectedSong ? (
+          <>
+            {selectedSong.title}
+            {selectedSong.artist && <span style={{ fontWeight: 'normal' }}> &mdash; {selectedSong.artist}</span>}
+          </>
+        ) : (
+          'No song selected'
+        )}
       </span>
       <button
         className="ui icon button inverted"
