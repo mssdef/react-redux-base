@@ -8,7 +8,28 @@ const songsReducer = () => {
   return songs;
 };
 
-const selectedSongReducer = (selectedSong = null, action) => {
+const storedLastSelectedSongId = localStorage.getItem('lastSelectedSongId');
+const storedLastSelectedSongTitle = localStorage.getItem('lastSelectedSongTitle');
+
+const findLastPlayedSongIndex = () => {
+  if (storedLastSelectedSongId) {
+    const index = songs.findIndex(song => String(song.id ?? '') === storedLastSelectedSongId);
+    if (index !== -1) return index;
+  }
+
+  if (storedLastSelectedSongTitle) {
+    const index = songs.findIndex(song => song.title === storedLastSelectedSongTitle);
+    if (index !== -1) return index;
+  }
+
+  return -1;
+};
+
+const lastPlayedSongIndex = findLastPlayedSongIndex();
+const initialSelectedSong = lastPlayedSongIndex !== -1 ? songs[lastPlayedSongIndex] : null;
+const initialSongIndex = lastPlayedSongIndex !== -1 ? lastPlayedSongIndex : 0;
+
+const selectedSongReducer = (selectedSong = initialSelectedSong, action) => {
   if (action.type === SONG_SELECTED) {
     return action.payload;
   }
@@ -16,7 +37,7 @@ const selectedSongReducer = (selectedSong = null, action) => {
   return selectedSong;
 };
 
-const nextSongReducer = (currentSongIndex = 0, action) => {
+const nextSongReducer = (currentSongIndex = initialSongIndex, action) => {
   if (action.type === 'NEXT_SONG') {
     return (currentSongIndex + 1) % songs.length;
   }

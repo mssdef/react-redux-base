@@ -34,6 +34,45 @@ describe('selectedSong sync with currentSongIndex on next/previous', () => {
   });
 });
 
+describe('restoring last played song on app start', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    jest.resetModules();
+  });
+
+  it('defaults to no selected song and index 0 when localStorage has no stored song', () => {
+    const reducers = require('../index').default;
+    const state = reducers(undefined, { type: '@@INIT' });
+    expect(state.selectedSong).toBeNull();
+    expect(state.currentSongIndex).toBe(0);
+  });
+
+  it('restores the selected song and index from a stored title', () => {
+    const songs = require('../../data/songs.json');
+    localStorage.setItem('lastSelectedSongTitle', songs[2].title);
+    const reducers = require('../index').default;
+    const state = reducers(undefined, { type: '@@INIT' });
+    expect(state.selectedSong).toEqual(songs[2]);
+    expect(state.currentSongIndex).toBe(2);
+  });
+
+  it('falls back to null/0 when the stored title no longer matches a song', () => {
+    localStorage.setItem('lastSelectedSongTitle', 'Some Deleted Song');
+    const reducers = require('../index').default;
+    const state = reducers(undefined, { type: '@@INIT' });
+    expect(state.selectedSong).toBeNull();
+    expect(state.currentSongIndex).toBe(0);
+  });
+
+  it('still responds to SONG_SELECTED after restoring from localStorage', () => {
+    const songs = require('../../data/songs.json');
+    localStorage.setItem('lastSelectedSongTitle', songs[2].title);
+    const reducers = require('../index').default;
+    const state = reducers(undefined, { type: 'SONG_SELECTED', payload: songs[0] });
+    expect(state.selectedSong).toEqual(songs[0]);
+  });
+});
+
 describe('volume reducer localStorage persistence', () => {
   beforeEach(() => {
     localStorage.clear();
