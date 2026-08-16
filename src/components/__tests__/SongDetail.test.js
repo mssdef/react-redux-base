@@ -16,7 +16,9 @@ const fullSong = {
   artworkUrl: 'https://example.com/artwork.jpg',
 };
 
-const baseState = { selectedSong: song, shuffle: false, repeatMode: 'none', playbackSpeed: 1, volume: 1, autoPlay: false };
+const songs = [song, { title: 'Song 2', duration: '3:00' }];
+
+const baseState = { selectedSong: song, songs, currentSongIndex: 0, shuffle: false, repeatMode: 'none', playbackSpeed: 1, volume: 1, autoPlay: false };
 
 describe('SongDetail song schema expansion', () => {
   it('displays artist and album when provided', () => {
@@ -81,6 +83,27 @@ describe('SongDetail auto-advance', () => {
     render(<Provider store={store}><SongDetail /></Provider>);
     fireEvent(document.querySelector('audio'), new Event('ended'));
     expect(store.getActions()).toHaveLength(0);
+  });
+
+  it('does not dispatch when audio ends on the last song and repeatMode is none', () => {
+    const store = mockStore({ ...baseState, currentSongIndex: songs.length - 1 });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    fireEvent(document.querySelector('audio'), new Event('ended'));
+    expect(store.getActions()).toHaveLength(0);
+  });
+
+  it('dispatches NEXT_SONG to wrap the queue when audio ends on the last song and repeatMode is all', () => {
+    const store = mockStore({ ...baseState, currentSongIndex: songs.length - 1, repeatMode: 'all' });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    fireEvent(document.querySelector('audio'), new Event('ended'));
+    expect(store.getActions()).toContainEqual({ type: 'NEXT_SONG' });
+  });
+
+  it('dispatches NEXT_SONG_SHUFFLE on the last song when repeatMode is all and shuffle is on', () => {
+    const store = mockStore({ ...baseState, currentSongIndex: songs.length - 1, repeatMode: 'all', shuffle: true });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    fireEvent(document.querySelector('audio'), new Event('ended'));
+    expect(store.getActions()).toContainEqual({ type: 'NEXT_SONG_SHUFFLE' });
   });
 });
 

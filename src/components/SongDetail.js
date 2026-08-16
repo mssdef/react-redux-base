@@ -18,6 +18,8 @@ const parseDurationToSeconds = (duration) => {
 
 const SongDetail = () => {
   const song = useSelector(state => state.selectedSong);
+  const songs = useSelector(state => state.songs);
+  const currentSongIndex = useSelector(state => state.currentSongIndex);
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -33,6 +35,8 @@ const SongDetail = () => {
   const handleEnded = () => {
     setIsPlaying(false);
     if (repeatMode === 'one') return;
+    const isEndOfQueue = currentSongIndex === songs.length - 1;
+    if (isEndOfQueue && repeatMode !== 'all') return;
     dispatch(shuffle ? shuffleNext() : nextSong());
   };
 
