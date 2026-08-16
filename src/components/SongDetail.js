@@ -1,20 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { nextSong, shuffleNext, setPlaybackSpeed, setVolume, toggleAutoPlay, setIsPlaying } from '../actions';
+import { nextSong, shuffleNext, setPlaybackSpeed, setVolume, toggleAutoPlay, setIsPlaying, setCurrentTime as setCurrentTimeInStore } from '../actions';
 import FullScreenPlayer from './FullScreenPlayer';
 import Waveform from './Waveform';
-
-const parseDurationToSeconds = (duration) => {
-  if (typeof duration === 'number') return duration;
-  if (typeof duration === 'string') {
-    const parts = duration.split(':').map(Number);
-    if (parts.length === 2 && parts.every(n => !Number.isNaN(n))) {
-      const [minutes, seconds] = parts;
-      return minutes * 60 + seconds;
-    }
-  }
-  return 0;
-};
+import { parseDurationToSeconds } from '../utils/duration';
 
 const SongDetail = () => {
   const song = useSelector(state => state.selectedSong);
@@ -105,20 +94,23 @@ const SongDetail = () => {
     if (!audio) return;
     audio.currentTime = Math.max(0, audio.currentTime + delta);
     setCurrentTime(audio.currentTime);
-  }, []);
+    dispatch(setCurrentTimeInStore(audio.currentTime));
+  }, [dispatch]);
 
   const handleTimeUpdate = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
     setCurrentTime(audio.currentTime);
-  }, []);
+    dispatch(setCurrentTimeInStore(audio.currentTime));
+  }, [dispatch]);
 
   const handleSeekChange = useCallback((e) => {
     const nextTime = parseFloat(e.target.value);
     const audio = audioRef.current;
     if (audio) audio.currentTime = nextTime;
     setCurrentTime(nextTime);
-  }, []);
+    dispatch(setCurrentTimeInStore(nextTime));
+  }, [dispatch]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {

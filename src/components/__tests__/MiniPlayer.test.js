@@ -268,4 +268,35 @@ describe('MiniPlayer', () => {
     );
     expect(screen.getByRole('button', { name: 'Play' })).toBeDisabled();
   });
+
+  it('shows a progress bar reflecting currentTime against the song duration', () => {
+    const store = mockStore({
+      selectedSong: { title: 'All Star', duration: '4:00' },
+      shuffle: false,
+      repeatMode: 'none',
+      songs: twoSongs,
+      isPlaying: true,
+      currentTime: 60,
+    });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    const progressBar = screen.getByRole('progressbar', { name: 'Playback progress' });
+    expect(progressBar).toHaveAttribute('aria-valuenow', '60');
+    expect(progressBar).toHaveAttribute('aria-valuemax', '240');
+  });
+
+  it('shows zero progress when no song is selected', () => {
+    const store = mockStore({ selectedSong: null, shuffle: false, repeatMode: 'none', songs: twoSongs, isPlaying: false, currentTime: 0 });
+    render(
+      <Provider store={store}>
+        <MiniPlayer />
+      </Provider>
+    );
+    const progressBar = screen.getByRole('progressbar', { name: 'Playback progress' });
+    expect(progressBar).toHaveAttribute('aria-valuenow', '0');
+    expect(progressBar).toHaveAttribute('aria-valuemax', '0');
+  });
 });

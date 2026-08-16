@@ -212,3 +212,22 @@ describe('playbackSpeed reducer localStorage persistence', () => {
     expect(state.playbackSpeed).toBe(0.5);
   });
 });
+
+describe('currentTime reducer', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    jest.resetModules();
+  });
+
+  it('defaults currentTime to 0', () => {
+    const reducers = require('../index').default;
+    const state = reducers(undefined, { type: '@@INIT' });
+    expect(state.currentTime).toBe(0);
+  });
+
+  it('sets currentTime on CURRENT_TIME_CHANGED', () => {
+    const reducers = require('../index').default;
+    const state = reducers(undefined, { type: 'CURRENT_TIME_CHANGED', payload: 42 });
+    expect(state.currentTime).toBe(42);
+  });
+});

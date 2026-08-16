@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import songs from '../data/songs.json';
-import { SONG_SELECTED, VOLUME_CHANGED, REPEAT_MODE_CHANGED, SHUFFLE_TOGGLED, PLAYBACK_SPEED_CHANGED, AUTOPLAY_TOGGLED, PLAYING_STATE_CHANGED } from '../actions/types';
+import { SONG_SELECTED, VOLUME_CHANGED, REPEAT_MODE_CHANGED, SHUFFLE_TOGGLED, PLAYBACK_SPEED_CHANGED, AUTOPLAY_TOGGLED, PLAYING_STATE_CHANGED, CURRENT_TIME_CHANGED } from '../actions/types';
 
 const REPEAT_MODES = ['none', 'one', 'all'];
 
@@ -114,6 +114,13 @@ const isPlayingReducer = (isPlaying = false, action) => {
   return isPlaying;
 };
 
+const currentTimeReducer = (currentTime = 0, action) => {
+  if (action.type === CURRENT_TIME_CHANGED) {
+    return action.payload;
+  }
+  return currentTime;
+};
+
 const combinedReducer = combineReducers({
   songs: songsReducer,
   selectedSong: selectedSongReducer,
@@ -123,7 +130,8 @@ const combinedReducer = combineReducers({
   playbackSpeed: playbackSpeedReducer,
   volume: volumeReducer,
   autoPlay: autoPlayReducer,
-  isPlaying: isPlayingReducer
+  isPlaying: isPlayingReducer,
+  currentTime: currentTimeReducer
 });
 
 const QUEUE_NAVIGATION_ACTIONS = ['NEXT_SONG', 'PREVIOUS_SONG', 'NEXT_SONG_SHUFFLE'];

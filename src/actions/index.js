@@ -1,4 +1,4 @@
-import { SONG_SELECTED, VOLUME_CHANGED, REPEAT_MODE_CHANGED, SHUFFLE_TOGGLED, PLAYBACK_SPEED_CHANGED, AUTOPLAY_TOGGLED, PLAYING_STATE_CHANGED } from './types';
+import { SONG_SELECTED, VOLUME_CHANGED, REPEAT_MODE_CHANGED, SHUFFLE_TOGGLED, PLAYBACK_SPEED_CHANGED, AUTOPLAY_TOGGLED, PLAYING_STATE_CHANGED, CURRENT_TIME_CHANGED } from './types';
 
 export const selectSong = song => {
   return {
@@ -61,5 +61,12 @@ export const setIsPlaying = (isPlaying) => {
   return {
     type: PLAYING_STATE_CHANGED,
     payload: isPlaying
+  };
+};
+
+export const setCurrentTime = (currentTime) => {
+  return {
+    type: CURRENT_TIME_CHANGED,
+    payload: currentTime
   };
 };
