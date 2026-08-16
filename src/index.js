@@ -14,6 +14,10 @@ store.subscribe(() => {
   localStorage.setItem('autoPlay', String(store.getState().autoPlay));
   localStorage.setItem('repeatMode', store.getState().repeatMode);
   localStorage.setItem('playbackSpeed', String(store.getState().playbackSpeed));
+
+  const { selectedSong } = store.getState();
+  localStorage.setItem('lastSelectedSongId', selectedSong ? String(selectedSong.id ?? '') : '');
+  localStorage.setItem('lastSelectedSongTitle', selectedSong ? selectedSong.title : '');
 });
 
 ReactDOM.render(
