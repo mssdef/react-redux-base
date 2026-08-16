@@ -820,4 +820,25 @@ describe('SongList', () => {
     expect(screen.queryByText('No Scrubs')).toBeNull();
     expect(screen.queryByText('Macarena')).toBeNull();
   });
+
+  it('should render both songs distinctly when two songs share the same title but have different ids', () => {
+    const duplicateTitleStore = mockStore({
+      songs: [
+        { id: 'song-1', title: 'Same Title', artist: 'Artist One', duration: '3:00' },
+        { id: 'song-2', title: 'Same Title', artist: 'Artist Two', duration: '4:00' },
+      ],
+      currentSongIndex: 0,
+      repeatMode: 'none',
+      shuffle: false,
+    });
+
+    render(
+      <Provider store={duplicateTitleStore}>
+        <SongList />
+      </Provider>
+    );
+
+    expect(screen.getAllByText('Same Title')).toHaveLength(2);
+    expect(screen.getAllByRole('button', { name: 'Select' })).toHaveLength(2);
+  });
 });

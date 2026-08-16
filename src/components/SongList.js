@@ -66,7 +66,7 @@ const SongList = () => {
       return (
         <div
           className={`item${isCurrentSong ? ' active' : ''}`}
-          key={song.title}
+          key={song.id}
           aria-current={isCurrentSong ? 'true' : undefined}
         >
           <div className="right floated content">
