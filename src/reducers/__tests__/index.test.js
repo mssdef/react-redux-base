@@ -120,3 +120,30 @@ describe('repeatMode reducer localStorage persistence', () => {
     expect(state.repeatMode).toBe('all');
   });
 });
+
+describe('playbackSpeed reducer localStorage persistence', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    jest.resetModules();
+  });
+
+  it('defaults playbackSpeed to 1 when localStorage has no stored value', () => {
+    const reducers = require('../index').default;
+    const state = reducers(undefined, { type: '@@INIT' });
+    expect(state.playbackSpeed).toBe(1);
+  });
+
+  it('initializes playbackSpeed from a value stored in localStorage', () => {
+    localStorage.setItem('playbackSpeed', '1.5');
+    const reducers = require('../index').default;
+    const state = reducers(undefined, { type: '@@INIT' });
+    expect(state.playbackSpeed).toBe(1.5);
+  });
+
+  it('still responds to PLAYBACK_SPEED_CHANGED after initializing from localStorage', () => {
+    localStorage.setItem('playbackSpeed', '1.5');
+    const reducers = require('../index').default;
+    const state = reducers(undefined, { type: 'PLAYBACK_SPEED_CHANGED', payload: 0.5 });
+    expect(state.playbackSpeed).toBe(0.5);
+  });
+});

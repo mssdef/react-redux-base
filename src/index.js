@@ -13,6 +13,7 @@ store.subscribe(() => {
   localStorage.setItem('volume', String(store.getState().volume));
   localStorage.setItem('autoPlay', String(store.getState().autoPlay));
   localStorage.setItem('repeatMode', store.getState().repeatMode);
+  localStorage.setItem('playbackSpeed', String(store.getState().playbackSpeed));
 });
 
 ReactDOM.render(

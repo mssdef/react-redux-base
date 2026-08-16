@@ -57,7 +57,10 @@ const shuffleReducer = (shuffle = storedShuffle, action) => {
   return shuffle;
 };
 
-const playbackSpeedReducer = (playbackSpeed = 1, action) => {
+const storedPlaybackSpeed = parseFloat(localStorage.getItem('playbackSpeed'));
+const initialPlaybackSpeed = Number.isNaN(storedPlaybackSpeed) ? 1 : storedPlaybackSpeed;
+
+const playbackSpeedReducer = (playbackSpeed = initialPlaybackSpeed, action) => {
   if (action.type === PLAYBACK_SPEED_CHANGED) {
     return action.payload;
   }
