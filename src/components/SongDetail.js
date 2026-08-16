@@ -98,6 +98,13 @@ const SongDetail = () => {
     setCurrentTime(audio.currentTime);
   }, []);
 
+  const handleSeekChange = useCallback((e) => {
+    const nextTime = parseFloat(e.target.value);
+    const audio = audioRef.current;
+    if (audio) audio.currentTime = nextTime;
+    setCurrentTime(nextTime);
+  }, []);
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.code === 'Escape' && isFullScreen) {
@@ -205,7 +212,7 @@ const SongDetail = () => {
               min="0"
               max={parseDurationToSeconds(song.duration)}
               value={currentTime}
-              onChange={(e) => setCurrentTime(e.target.value)}
+              onChange={handleSeekChange}
               className="ui range input fluid"
               aria-label={`Seek bar for ${song.title}`}
             />

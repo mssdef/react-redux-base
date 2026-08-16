@@ -296,6 +296,15 @@ describe('SongDetail seek bar', () => {
     const seekBar = screen.getByLabelText('Seek bar for No Scrubs');
     expect(seekBar.max).toBe('300');
   });
+
+  it('sets audio.currentTime when the seek bar value changes', () => {
+    const store = mockStore({ ...baseState });
+    render(<Provider store={store}><SongDetail /></Provider>);
+    const seekBar = screen.getByLabelText('Seek bar for No Scrubs');
+    const audio = document.querySelector('audio');
+    fireEvent.change(seekBar, { target: { value: '90' } });
+    expect(audio.currentTime).toBe(90);
+  });
 });
 
 describe('SongDetail auto-play preference', () => {
