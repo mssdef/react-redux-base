@@ -9,6 +9,15 @@ describe('songs.json', () => {
     expect(songs.length).toBeGreaterThan(0);
   });
 
+  it('each song has a unique id', () => {
+    const ids = songs.map(s => s.id);
+    ids.forEach(id => {
+      expect(typeof id).toBe('string');
+      expect(id.length).toBeGreaterThan(0);
+    });
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
   it('each song has a title and duration', () => {
     songs.forEach(song => {
       expect(typeof song.title).toBe('string');
